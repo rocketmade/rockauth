@@ -1,0 +1,5 @@
+en:
+  rockauth:
+    errors:
+      invalid_parameter_error: 'Invalid Parameter: %{parameter}'
+      missing_parameter_error: 'Missing Parameter: %{parameter}'

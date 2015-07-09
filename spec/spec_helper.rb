@@ -13,8 +13,9 @@ require File.expand_path('../dummy/config/environment', __FILE__)
 abort("The Rails environment is not running in test mode!") unless Rails.env.test?
 require 'rspec/rails'
 require 'shoulda/matchers'
+require 'factory_girl_rails'
 
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
