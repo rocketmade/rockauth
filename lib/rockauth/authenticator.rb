@@ -11,6 +11,11 @@ module Rockauth
       def error_messages
         errors.map(&:message)
       end
+
+      def apply
+        self.success = authentication.save
+        self.resource_owner = authentication.resource_owner # owner is set before_validation
+      end
     end
 
     class AuthenticationError < StandardError
@@ -84,18 +89,14 @@ module Rockauth
       if response.errors.empty?
         authentication_params = params.require(:authentication).permit(authentication_permitted_params)
         response.authentication = Authentication.new (controller.try(:authentication_options) || {}).merge(authentication_params)
-        response.resource_owner = response.authentication.try(:resource_owner)
-      end
-
-      if response.errors.empty?
-        response.success = true
+        response.apply
       else
         false
       end
     end
 
     def authentication_permitted_params
-      %i(auth_type client_id client_secret email password assertion provider provider_token provider_token_secret)
+      %i(auth_type client_id client_secret username password assertion provider provider_token provider_token_secret)
     end
 
     def validate_parameters
@@ -114,12 +115,22 @@ module Rockauth
           end
         end
       end
+
+      if authentication_params[:auth_type].present? && !valid_auth_types.include?(authentication_params[:auth_type])
+        response.errors << InvalidParameterError.new(:auth_type).tap do |error|
+          error.set_backtrace caller
+        end
+      end
+    end
+
+    def valid_auth_types
+      %w(password assertion)
     end
 
     def required_params_for_type type
       case type
       when 'password'
-        %i(email password)
+        %i(username password)
       when 'assertion'
         %i(provider provider_token)
       else

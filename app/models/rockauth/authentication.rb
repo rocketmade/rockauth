@@ -1,3 +1,5 @@
+require 'jwt'
+
 module Rockauth
   class Authentication < ActiveRecord::Base
     self.table_name = 'authentications'
@@ -7,21 +9,25 @@ module Rockauth
     validates_presence_of :user
     validates_presence_of :expiration
     validates_presence_of :auth_type
+    validates_inclusion_of :auth_type, in: %w(password assertion)
+    validates_presence_of :client_id
 
     attr_accessor :password
-    attr_accessor :email
+    attr_accessor :username
     attr_accessor :provider
     attr_accessor :provider_token
     attr_accessor :provider_secret_token
     attr_accessor :time_to_live
     attr_accessor :token
-    attr_accessor :client_id
+    attr_accessor :client_secret
+
+    alias_method :resource_owner, :user
 
     before_validation on: :create do
-      self.expiration ||= (Time.now + time_to_live).to_i
+      self.expiration ||= Time.now.to_i + time_to_live
       if password?
-        self.user = User.where(email: email)
-      else
+        self.user = User.with_username(username).first
+      elsif assertion?
         self.provider_authentication = ProviderAuthentication.new provider: provider, provider_token: provider_token, provider_secret_token: provider_secret_token
         provider_authentication.verify_with_provider
         self.user = provider_authentication.user
@@ -36,7 +42,7 @@ module Rockauth
     end
 
     validates_presence_of :provider_authentication, if: :assertion?, on: :create
-    validate on: :create, if: :assertions do
+    validate on: :create, if: :assertion? do
       errors.add :provider_token, :invalid unless provider_authentication.valid?
     end
 

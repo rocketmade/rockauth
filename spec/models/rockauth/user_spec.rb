@@ -25,4 +25,11 @@ RSpec.describe Rockauth::User, type: :model do
     it { is_expected.to     allow_value("1234567890", "alongasspassword").for :password }
     it { is_expected.not_to allow_value("foo", "123").for :password }
   end
+
+  describe ".with_username" do
+    let(:user) { create(:user) }
+    it "gets the appropriate user" do
+      expect(Rockauth::User.with_username(user.email)).to include user
+    end
+  end
 end
