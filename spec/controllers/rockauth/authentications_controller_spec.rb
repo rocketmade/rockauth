@@ -1,8 +1,9 @@
 require 'spec_helper'
+module Rockauth
+  RSpec.describe AuthenticationsController, type: :controller do
+    routes { Engine.routes }
+    describe "POST authenticate" do
 
-RSpec.describe Rockauth::AuthenticationsController, type: :controller do
-  describe "POST authenticate" do
-    it "authorizes the resource owner" do
     end
   end
 end

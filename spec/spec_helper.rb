@@ -17,7 +17,7 @@ require 'factory_girl_rails'
 
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
-
+ActiveRecord::Base.include_root_in_json = true
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true

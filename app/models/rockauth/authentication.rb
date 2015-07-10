@@ -3,14 +3,8 @@ require 'jwt'
 module Rockauth
   class Authentication < ActiveRecord::Base
     self.table_name = 'authentications'
-    belongs_to :user, class_name: "Rockauth::User"
+    belongs_to :user, class_name: "Rockauth::User", inverse_of: :authentications
     belongs_to :provider_authentication, class_name: "Rockauth::ProviderAuthentication"
-
-    validates_presence_of :user
-    validates_presence_of :expiration
-    validates_presence_of :auth_type
-    validates_inclusion_of :auth_type, in: %w(password assertion)
-    validates_presence_of :client_id
 
     attr_accessor :password
     attr_accessor :username
@@ -20,6 +14,13 @@ module Rockauth
     attr_accessor :time_to_live
     attr_accessor :token
     attr_accessor :client_secret
+
+    validates_presence_of :user
+    validates_presence_of :expiration
+    validates_presence_of :auth_type
+    validates_inclusion_of :auth_type, in: %w(password assertion registration)
+    validates_presence_of :client_id
+    validates_presence_of :client_secret, on: :create
 
     alias_method :resource_owner, :user
 
@@ -32,8 +33,11 @@ module Rockauth
         provider_authentication.verify_with_provider
         self.user = provider_authentication.user
       end
+
+      true
     end
 
+    validates_presence_of :username, if: :password?, on: :create
     validates_presence_of :password, if: :password?, on: :create
     validate on: :create, if: :password? do
       if user.present? && !user.authenticate(password)
@@ -46,8 +50,20 @@ module Rockauth
       errors.add :provider_token, :invalid unless provider_authentication.valid?
     end
 
+    validate on: :create do
+      if client_id.present?
+        client = Rockauth::Config.clients.find { |c| c.id == client_id }
+        if client.blank?
+          errors.add :client_id, :invalid
+        elsif client.secret != client_secret
+          errors.add :client_secret, :invalid
+        end
+      end
+    end
+
     after_initialize do
       self.salt ||= SecureRandom.base64(12)
+      true
     end
 
     before_create do
@@ -62,6 +78,10 @@ module Rockauth
 
     def assertion?
       auth_type == 'assertion'
+    end
+
+    def registration?
+      auth_type == 'registration'
     end
 
     def time_to_live

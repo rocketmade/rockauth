@@ -1,5 +1,5 @@
 module Rockauth
-  class ProviderAuthenticationSerializer < ActiveModel::Serializer
+  class ProviderAuthenticationSerializer < BaseSerializer
     attributes :id
   end
 end

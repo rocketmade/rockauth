@@ -2,7 +2,7 @@ module Rockauth
   module ControllerConcern
     extend ActiveSupport::Concern
 
-    def authenticate_client!
+    def authenticate_resource_owner!
       # TODO
     end
 

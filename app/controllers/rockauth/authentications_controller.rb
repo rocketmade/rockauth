@@ -1,11 +1,12 @@
 require 'rails-api'
+module Rockauth
+  class AuthenticationsController < ActionController::API
+    def authenticate
+      Authenticator.from_request(request, self)
+    end
 
-class Rockauth::AuthenticationsController < ActionController::API
-  def authenticate
-    Authenticator.from_request(request, self)
-  end
-
-  def authentication_options
-    {}
+    def authentication_options
+      {}
+    end
   end
 end

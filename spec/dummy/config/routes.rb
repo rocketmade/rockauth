@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
-
-  mount Rockauth::Engine => "/rockauth"
+  namespace :api do
+    mount Rockauth::Engine => "/"
+  end
 end

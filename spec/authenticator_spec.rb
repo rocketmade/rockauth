@@ -22,19 +22,9 @@ module Rockauth
         expect(auth_response).to be_a Authenticator::AuthenticationResponse
       end
 
-      context "when missing the authentication parameter" do
-        it "is not successful" do
-          expect(auth_response.success).to be false
-        end
-        it "provides a meaningful error" do
-          expect(auth_response.errors).not_to be_empty
-          expect(auth_response.error_messages).to include I18n.t('rockauth.errors.missing_parameter_error', parameter: :authentication)
-        end
-      end
-
       context "when missing basic authentication data" do
         let(:authentication_parameters) do
-          { authentication: { foo: 'bar' } }
+          { authentication: { } }
         end
 
         it "is not successful" do
@@ -42,10 +32,11 @@ module Rockauth
         end
 
         it "provides a meaningful error" do
-          expect(auth_response.errors).not_to be_empty
-          expect(auth_response.error_messages).to include I18n.t('rockauth.errors.missing_parameter_error', parameter: :client_id)
-          expect(auth_response.error_messages).to include I18n.t('rockauth.errors.missing_parameter_error', parameter: :client_secret)
-          expect(auth_response.error_messages).to include I18n.t('rockauth.errors.missing_parameter_error', parameter: :auth_type)
+          expect(auth_response.error).not_to be_blank
+          %i(client_id client_secret auth_type).each do |key|
+            expect(auth_response.error.validation_errors).to have_key key
+            expect(auth_response.error.validation_errors[key]).to include "can't be blank"
+          end
         end
       end
 
@@ -76,9 +67,11 @@ module Rockauth
           end
 
           it "provides a meaningful error" do
-            expect(auth_response.errors).not_to be_empty
-            expect(auth_response.error_messages).to include I18n.t('rockauth.errors.missing_parameter_error', parameter: :username)
-            expect(auth_response.error_messages).to include I18n.t('rockauth.errors.missing_parameter_error', parameter: :password)
+            expect(auth_response.error).not_to be_blank
+            expect(auth_response.error.validation_errors).to have_key :username
+            expect(auth_response.error.validation_errors).to have_key :password
+            expect(auth_response.error.validation_errors[:username].join(' ')).to match /can't be blank/
+            expect(auth_response.error.validation_errors[:password].join(' ')).to match /can't be blank/
           end
         end
       end # ~ when authenticating with a password
