@@ -1,4 +1,6 @@
+require 'rails-api'
 require 'active_model_serializers'
+
 module Rockauth
   class MeController < ActionController::API
     include ActionController::Serialization

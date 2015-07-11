@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'pp'
+
 module Rockauth
   RSpec.describe MeController, type: :controller do
     routes { Engine.routes }
