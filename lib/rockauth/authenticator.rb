@@ -14,7 +14,7 @@ module Rockauth
 
       def error
         if authentication.present? && !authentication.errors.empty?
-          @error ||= Errors::ControllerError.new 400, "Authentication could not be created", authentication.errors.as_json
+          @error ||= Errors::ControllerError.new 400, I18n.t("rockauth.errors.authentication_failed"), authentication.errors.as_json
         end
       end
     end
@@ -25,8 +25,13 @@ module Rockauth
 
     delegate :params, to: :controller
 
-    def self.validate_token token
-
+    def self.authentication_from_request request, controller
+      bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
+      if bearer == "bearer" && token.present?
+        Authentication.for_token(token).first
+      else
+        nil
+      end
     end
 
     def self.from_request request, controller

@@ -6,6 +6,10 @@ module Rockauth
     belongs_to :user, class_name: "Rockauth::User", inverse_of: :authentications
     belongs_to :provider_authentication, class_name: "Rockauth::ProviderAuthentication"
 
+    scope :expired, -> { where('expiration <= ?', Time.now.to_i) }
+    scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
+    scope :for_token, -> (token) { where(encrypted_token: encrypt_token(token)) }
+
     attr_accessor :password
     attr_accessor :username
     attr_accessor :provider
@@ -98,6 +102,10 @@ module Rockauth
 
     def self.encrypt_token tok
       Digest::SHA2.hexdigest tok
+    end
+
+    def active?
+      Time.at(expiration) > Time.now
     end
 
     def token_payload

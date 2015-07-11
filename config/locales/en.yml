@@ -1,5 +1,6 @@
 en:
   rockauth:
     errors:
-      invalid_parameter_error: 'Invalid Parameter: %{parameter}'
-      missing_parameter_error: 'Missing Parameter: %{parameter}'
+      unauthorized: "You must be logged in to continue."
+      authentication_failed: "Authentication failure."
+      server_error: "Something went wrong."
