@@ -51,6 +51,17 @@ module Rockauth
           expect(assigns(:auth_response).resource_owner).to eq user
         end
 
+        it 'includes the authentication token in the response' do
+          post :authenticate, authentication_parameters
+          expect(parsed_response['authentication']).to have_key 'token'
+        end
+
+        it 'includes the authentication token in the response' do
+          post :authenticate, authentication_parameters
+          pp parsed_response
+          expect(parsed_response['authentication']).to have_key 'user'
+        end
+
         context "when missing authentication parameters" do
           let(:authentication_parameters) do
             { authentication: { auth_type: 'password' } }

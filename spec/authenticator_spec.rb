@@ -19,7 +19,7 @@ module Rockauth
       let(:auth_response) { described_class.from_request(request, controller) }
 
       it "returns a reponse" do
-        expect(auth_response).to be_a Authenticator::AuthenticationResponse
+        expect(auth_response).to be_a Authenticator::Response
       end
 
       context "when missing basic authentication data" do

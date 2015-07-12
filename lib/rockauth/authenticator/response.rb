@@ -29,7 +29,7 @@ module Rockauth
     end
 
     def render_success
-      { json: resource_owner, serializer: MeSerializer, status: 200 }
+      { json: authentication, serializer: AuthenticationSerializer, status: 200 }
     end
 
     def render_error

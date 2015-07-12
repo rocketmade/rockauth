@@ -3,6 +3,7 @@ require 'spec_helper'
 module Rockauth
   RSpec.describe MeController, type: :controller do
     routes { Engine.routes }
+    let(:parsed_response) { JSON.parse(response.body).with_indifferent_access }
 
     describe 'POST create' do
       let(:client) { create(:client) }
@@ -19,6 +20,12 @@ module Rockauth
         expect do
           post :create, parameters
         end.to change { User.count }.by 1
+      end
+
+      it 'includes the authentication token in the response' do
+        post :create, parameters
+        expect(parsed_response[:user]).to have_key :authentication
+        expect(parsed_response[:user][:authentication]).to have_key :token
       end
 
       context 'the client information is incorrect' do
