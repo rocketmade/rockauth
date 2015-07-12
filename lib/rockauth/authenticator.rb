@@ -1,24 +1,6 @@
 module Rockauth
   class Authenticator
-    class AuthenticationResponse < Struct.new(:success, :resource_owner, :authentication)
-      alias_method :success?, :success
-
-      def initialize *args
-        super
-      end
-
-      def apply
-        self.success = authentication.save
-        self.resource_owner = authentication.resource_owner # owner is set before_validation
-      end
-
-      def error
-        if authentication.present? && !authentication.errors.empty?
-          @error ||= Errors::ControllerError.new 400, I18n.t("rockauth.errors.authentication_failed"), authentication.errors.as_json
-        end
-      end
-    end
-
+    autoload :Response, 'rockauth/authenticator/response'
     attr_accessor :request
     attr_accessor :controller
     attr_accessor :response
@@ -47,7 +29,7 @@ module Rockauth
     end
 
     def authenticate
-      self.response = AuthenticationResponse.new false
+      self.response = Response.new false
       authentication_params = params.permit(authentication: authentication_permitted_params).fetch(:authentication, {})
       response.authentication = Authentication.new (controller.try(:authentication_options) || {}).merge(authentication_params)
       response.apply

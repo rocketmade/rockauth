@@ -2,6 +2,8 @@ require 'spec_helper'
 
 module Rockauth
   RSpec.describe AuthenticationsController, type: :controller do
+    controller do
+    end
     routes { Engine.routes }
 
     describe 'POST authenticate' do
@@ -25,11 +27,10 @@ module Rockauth
 
         it 'provides a meaningful error' do
           post :authenticate, authentication_parameters
-
-          expect(parsed_response['errors']['validation_errors']).not_to be_blank
+          expect(parsed_response['error']['validation_errors']).not_to be_blank
           %w(client_id client_secret auth_type).each do |key|
-            expect(parsed_response['errors']['validation_errors']).to have_key key
-            expect(parsed_response['errors']['validation_errors']).to include 'can\'t be blank'
+            expect(parsed_response['error']['validation_errors']).to have_key key
+            expect(parsed_response['error']['validation_errors'][key]).to include 'can\'t be blank'
           end
         end
       end
@@ -45,10 +46,9 @@ module Rockauth
         it "authenticates the user" do
           expect do
             post :authenticate, authentication_parameters
-            auth_response
           end.to change { Rockauth::Authentication.count }.by 1
           expect(response).to be_success
-          expect(assigns(:user)).to eq user
+          expect(assigns(:auth_response).resource_owner).to eq user
         end
 
         context "when missing authentication parameters" do
