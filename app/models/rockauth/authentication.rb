@@ -56,7 +56,7 @@ module Rockauth
 
     validate on: :create do
       if client_id.present?
-        client = Rockauth::Config.clients.find { |c| c.id == client_id }
+        client = Configuration.clients.find { |c| c.id == client_id }
         if client.blank?
           errors.add :client_id, :invalid
         elsif client.secret != client_secret
@@ -89,7 +89,7 @@ module Rockauth
     end
 
     def time_to_live
-      @time_to_live ||= Config.token_time_to_live
+      @time_to_live ||= Configuration.token_time_to_live
     end
 
     def generate_token
