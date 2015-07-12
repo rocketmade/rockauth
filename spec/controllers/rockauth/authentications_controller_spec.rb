@@ -58,7 +58,6 @@ module Rockauth
 
         it 'includes the authentication token in the response' do
           post :authenticate, authentication_parameters
-          pp parsed_response
           expect(parsed_response['authentication']).to have_key 'user'
         end
 
