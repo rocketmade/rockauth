@@ -14,11 +14,11 @@ module Rockauth
     validates_presence_of :authentications, on: :create
 
     validates_presence_of :email, if: :email_required?
-    validates_format_of :email, with: Config.email_regexp, if: -> { (new_record? || email_changed?) }, allow_blank: true
+    validates_format_of :email, with: Configuration.email_regexp, if: -> { (new_record? || email_changed?) }, allow_blank: true
 
     has_secure_password validations: true
     validates_presence_of :password, if: :password_required?
-    validates_length_of :password, in: Config.allowed_password_length
+    validates_length_of :password, in: Configuration.allowed_password_length
 
     scope :with_username, -> (username) { where("#{self.table_name}.email ILIKE ?", username) }
 

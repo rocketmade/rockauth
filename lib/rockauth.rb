@@ -4,7 +4,7 @@ module Rockauth
   ROOT = File.dirname(__FILE__)
   autoload :Authenticator, 'rockauth/authenticator'
   autoload :Client, 'rockauth/client'
-  autoload :Config, 'rockauth/config'
+  autoload :Configuration, 'rockauth/configuration'
   autoload :ControllerConcern, 'rockauth/controller_concern'
   autoload :Engine, 'rockauth/engine'
   autoload :Errors, 'rockauth/errors'
