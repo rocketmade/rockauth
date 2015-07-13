@@ -36,7 +36,7 @@ module Rockauth
     end
 
     def authentication_permitted_params
-      %i(auth_type client_id client_secret username password assertion provider provider_token provider_token_secret)
+      %i(auth_type client_id client_secret username password provider provider_token provider_token_secret)
     end
   end
 end

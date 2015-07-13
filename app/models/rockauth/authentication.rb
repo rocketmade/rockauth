@@ -6,6 +6,8 @@ module Rockauth
     belongs_to :user, class_name: "Rockauth::User", inverse_of: :authentications
     belongs_to :provider_authentication, class_name: "Rockauth::ProviderAuthentication"
 
+    accepts_nested_attributes_for :provider_authentication
+
     scope :expired, -> { where('expiration <= ?', Time.now.to_i) }
     scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
     scope :for_token, -> (token) { where(encrypted_token: encrypt_token(token)) }

@@ -95,6 +95,10 @@ module Rockauth
         context "instagram" do
 
         end
+
+        context "google_plus" do
+
+        end
       end
     end
   end

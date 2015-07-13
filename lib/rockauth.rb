@@ -8,6 +8,9 @@ module Rockauth
   autoload :ControllerConcern, 'rockauth/controller_concern'
   autoload :Engine, 'rockauth/engine'
   autoload :Errors, 'rockauth/errors'
+  autoload :ProviderValidationConcern, 'rockauth/provider_validation_concern'
+  autoload :ProviderUserInformation, 'rockauth/provider_user_information'
+
   #autoload :User, File.join(ROOT, '../app/models/rockauth/user')
   #autoload :Authorization, File.join(ROOT, '../app/models/rockauth/authorization')
   #autoload :AuthenticationsController, File.join(ROOT, '../app/controllers/rockauth/authentications_controller')

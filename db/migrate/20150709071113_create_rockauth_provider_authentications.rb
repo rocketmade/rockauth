@@ -6,7 +6,6 @@ class CreateRockauthProviderAuthentications < ActiveRecord::Migration
       t.string :provider_user_id, null: false, index: true
       t.string :provider_access_token, null: false
       t.string :provider_access_token_secret
-      t.string :provider_key, null: false, default: 'default'
 
       t.timestamps null: false
     end

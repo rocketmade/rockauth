@@ -14,6 +14,7 @@ abort("The Rails environment is not running in test mode!") unless Rails.env.tes
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'factory_girl_rails'
+require 'webmock'
 
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!
