@@ -6,19 +6,27 @@ module Rockauth
     included do
       validates_inclusion_of :provider, in: ->(instance) { instance.class.valid_networks }
 
-      before_validation do
+      before_validation :configure_from_provider
+
+      def configure_from_provider
         if provider.present? && self.class.valid_networks.include?(provider)
-          instance_exec &self.class.network_validator(provider)
+          self.provider_user_information = instance_exec &self.class.network_validator(provider)
+          assign_attributes_from_provider
         end
+
+        true
+      end
+
+      def assign_attributes_from_provider
+        return unless provider_user_information.present?
+        self.provider_user_id = provider_user_information.user_id
       end
 
       { facebook: 'fb_graph', instagram: 'instagram', twitter: 'twitter', google_plus: 'google_plus' }.each do |key, value|
         begin
           require value
           provider_network key do
-            @provider_user_information ||= ProviderUserInformation.for_provider(provider, provider_access_token, provider_access_token_secret).tap do |u|
-              self.provider_user_id = u.user_id
-            end
+            ProviderUserInformation.for_provider(provider, provider_access_token, provider_access_token_secret)
           end
         rescue LoadError
           Rails.logger.warn "Rockauth: Could not load the #{value} gem, #{key.to_s.humanize} provider authentication disabled"

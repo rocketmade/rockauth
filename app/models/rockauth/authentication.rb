@@ -35,8 +35,7 @@ module Rockauth
       if password?
         self.user = User.with_username(username).first
       elsif assertion?
-        self.provider_authentication = ProviderAuthentication.new provider: provider, provider_token: provider_token, provider_secret_token: provider_secret_token
-        provider_authentication.verify_with_provider
+        self.provider_authentication = ProviderAuthentication.for_authentication provider: provider, provider_access_token: provider_token, provider_access_token_secret: provider_secret_token
         self.user = provider_authentication.user
       end
 

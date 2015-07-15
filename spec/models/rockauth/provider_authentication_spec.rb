@@ -7,10 +7,10 @@ RSpec.describe Rockauth::ProviderAuthentication, type: :model, social_auth: true
   it { is_expected.to validate_presence_of :user }
   it { is_expected.to validate_presence_of :provider }
   it { is_expected.to validate_presence_of :provider_access_token }
-  it { is_expected.to validate_presence_of :provider_key }
 
   %w(facebook google_plus instagram twitter).each do |key|
     context "when the provider is #{key}" do
+      subject { build(:provider_authentication, provider: key) }
       it "sets the provider user id" do
         expect do
           subject.save

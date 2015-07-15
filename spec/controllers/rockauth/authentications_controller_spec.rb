@@ -83,21 +83,50 @@ module Rockauth
         end
       end
 
+      context "when authenticating with an assertion", social_auth: true do
+        let!(:user) { create(:user) }
+        let(:client) { create(:client) }
+        let(:provider) { }
+        let!(:provider_authentication) { create(:provider_authentication, user: user, provider: provider, provider_user_id: provider_user_id) }
 
-      context "when authenticating with an assertion", pending: "Not Implemented" do
+        let(:authentication_parameters) do
+          { authentication: { auth_type: 'assertion', provider: provider, client_id: client.id, client_secret: client.secret, access_token: 'foo', access_token_secret: 'bar' } }
+        end
+
         context "facebook" do
+          let(:provider) { 'facebook' }
 
+          it "authenticates" do
+            post :authenticate, authentication_parameters
+            expect(response).to be_success
+          end
         end
 
         context "twitter" do
+          let(:provider) { 'twitter' }
+
+          it "authenticates" do
+            post :authenticate, authentication_parameters
+            expect(response).to be_success
+          end
         end
 
         context "instagram" do
+          let(:provider) { 'instagram' }
 
+          it "authenticates" do
+            post :authenticate, authentication_parameters
+            expect(response).to be_success
+          end
         end
 
         context "google_plus" do
+          let(:provider) { 'google_plus' }
 
+          it "authenticates" do
+            post :authenticate, authentication_parameters
+            expect(response).to be_success
+          end
         end
       end
     end

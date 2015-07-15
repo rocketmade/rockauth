@@ -1,12 +1,24 @@
 module Rockauth
   class ProviderUserInformation < Struct.new(:access_token, :access_token_secret)
     def self.for_provider provider, access_token, access_token_secret
-      klass = "#{self}::#{provider.to_s.classify}".constantize
+      klass = "#{self}::#{provider.to_s.camelize}".constantize
       klass.new(access_token, access_token_secret)
     end
 
     def valid?
       user_id.present?
+    end
+
+    def user
+      @user ||= begin
+                  get_user
+                rescue StandardError => e
+                  Rails.logger.error "[Rockauth] Could not authenticate social user: #{e}"
+                  nil
+                end
+    end
+
+    def get_user
     end
 
     class Facebook < ProviderUserInformation
@@ -18,8 +30,8 @@ module Rockauth
         user.picture :large
       end
 
-      def user
-        @user ||= FbGraph::User.me(access_token).fetch
+      def get_user
+        FbGraph::User.me(access_token).fetch
       end
     end
 
@@ -28,8 +40,8 @@ module Rockauth
         user.try(:id)
       end
 
-      def user
-        @user ||= twitter_client.verify_credentials rescue nil
+      def get_user
+        twitter_client.verify_credentials
       end
 
       private
@@ -55,8 +67,8 @@ module Rockauth
         (user.try(:image) || {})[:url]
       end
 
-      def user
-        @user ||= GooglePlus::Person.get('me', key: access_token) rescue nil
+      def get_user
+        ::GooglePlus::Person.get('me', key: access_token)
       end
     end
 
@@ -70,8 +82,8 @@ module Rockauth
         user.try(:profile_picture)
       end
 
-      def user
-        @user ||= Instagram.client(access_token: access_token).user rescue nil
+      def get_user
+        ::Instagram.client(access_token: access_token).user
       end
     end
 

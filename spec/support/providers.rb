@@ -6,16 +6,10 @@ RSpec.shared_context :social_auth, social_auth: true do
   let(:social_user_auth) {
     dbl = double(FbGraph::User)
 
-    # lookup methods
-    allow(dbl).to receive(:fetch).and_return dbl
-    allow(dbl).to receive(:verify_credentials).and_return dbl
-    allow(dbl).to receive(:user).and_return dbl
-
-    # identifier methods
     allow(dbl).to receive(:id).and_return provider_user_id
     allow(dbl).to receive(:identifier).and_return provider_user_id
 
-    dbl
+    dbl.as_null_object
   }
 
   before :each do

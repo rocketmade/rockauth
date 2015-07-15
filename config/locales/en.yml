@@ -1,4 +1,7 @@
 en:
+  errors:
+    messages:
+      rockauth_cannot_be_changed: "cannot be changed"
   rockauth:
     errors:
       unauthorized: "You must be logged in to continue."
