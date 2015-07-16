@@ -31,7 +31,7 @@ module Rockauth
       end
 
       def get_user
-        FbGraph::User.me(access_token).fetch
+        FbGraph2::User.me(access_token).fetch
       end
     end
 

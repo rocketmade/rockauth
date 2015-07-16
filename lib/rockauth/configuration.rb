@@ -4,7 +4,7 @@ module Rockauth
     Configuration
   end
 
-  Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients resource_owner_class)) do
+  Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients resource_owner_class warn_missing_social_auth_gems)) do
     def resource_owner_class= arg
       @constantized_resource_owner_class = nil
       @resource_owner_class = arg
@@ -18,5 +18,6 @@ module Rockauth
     config.token_time_to_live = 365 * 24 * 60 * 60
     config.clients = []
     config.resource_owner_class = 'Rockauth::User'
+    warn_missing_social_auth_gems = true
   end
 end
