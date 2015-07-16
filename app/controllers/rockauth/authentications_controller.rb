@@ -15,5 +15,9 @@ module Rockauth
     def authentication_options
       {}
     end
+
+    def resource_owner_class
+      Rockauth::Configuration.resource_owner_class
+    end
   end
 end

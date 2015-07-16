@@ -9,7 +9,7 @@ module Rockauth
 
     def self.authentication_from_request request, controller
       bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
-      if bearer == "bearer" && token.present?
+      if bearer.to_s.downcase == "bearer" && token.present?
         Authentication.for_token(token).first
       else
         nil
@@ -19,7 +19,9 @@ module Rockauth
     def self.from_request request, controller
       instance = new request, controller
 
-      instance.authenticate
+      resource_owner_class = controller.try(:resource_owner_class)
+
+      instance.authenticate resource_owner_class
       instance.response
     end
 
@@ -28,9 +30,9 @@ module Rockauth
       self.controller = controller
     end
 
-    def authenticate
+    def authenticate resource_owner_class=User
       self.response = Response.new false
-      authentication_params = params.permit(authentication: authentication_permitted_params).fetch(:authentication, {})
+      authentication_params = params.permit(authentication: authentication_permitted_params).fetch(:authentication, {}).merge(resource_owner_class: resource_owner_class)
       response.authentication = Authentication.new (controller.try(:authentication_options) || {}).merge(authentication_params)
       response.apply
     end

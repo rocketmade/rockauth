@@ -1,25 +1,15 @@
 require 'rails'
 require 'active_support'
 module Rockauth
-  ROOT = File.dirname(__FILE__)
-  autoload :Authenticator, 'rockauth/authenticator'
-  autoload :Client, 'rockauth/client'
-  autoload :Configuration, 'rockauth/configuration'
-  autoload :ControllerConcern, 'rockauth/controller_concern'
-  autoload :Engine, 'rockauth/engine'
-  autoload :Errors, 'rockauth/errors'
+  autoload :Authenticator,             'rockauth/authenticator'
+  autoload :Client,                    'rockauth/client'
+  autoload :Configuration,             'rockauth/configuration'
+  autoload :ControllerConcern,         'rockauth/controller_concern'
+  autoload :Engine,                    'rockauth/engine'
+  autoload :Errors,                    'rockauth/errors'
+  autoload :ProviderUserInformation,   'rockauth/provider_user_information'
   autoload :ProviderValidationConcern, 'rockauth/provider_validation_concern'
-  autoload :ProviderUserInformation, 'rockauth/provider_user_information'
-
-  #autoload :User, File.join(ROOT, '../app/models/rockauth/user')
-  #autoload :Authorization, File.join(ROOT, '../app/models/rockauth/authorization')
-  #autoload :AuthenticationsController, File.join(ROOT, '../app/controllers/rockauth/authentications_controller')
+  autoload :ResourceOwnerConcern,      'rockauth/resource_owner_concern'
 end
-
-# require 'rockauth/config'
+require 'rockauth/configuration'
 require 'rockauth/engine'
-# require 'rockauth/authenticator'
-require File.expand_path('../../app/models/rockauth/user', __FILE__)
-require File.expand_path('../../app/models/rockauth/provider_authentication', __FILE__)
-require File.expand_path('../../app/models/rockauth/authentication', __FILE__)
-require File.expand_path('../../app/controllers/rockauth/authentications_controller', __FILE__)

@@ -3,7 +3,7 @@ require 'jwt'
 module Rockauth
   class Authentication < ActiveRecord::Base
     self.table_name = 'authentications'
-    belongs_to :user, class_name: "Rockauth::User", inverse_of: :authentications
+    belongs_to :resource_owner, polymorphic: true, inverse_of: :authentications
     belongs_to :provider_authentication, class_name: "Rockauth::ProviderAuthentication"
 
     accepts_nested_attributes_for :provider_authentication
@@ -12,6 +12,7 @@ module Rockauth
     scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
     scope :for_token, -> (token) { where(encrypted_token: encrypt_token(token)) }
 
+    attr_accessor :resource_owner_class
     attr_accessor :password
     attr_accessor :username
     attr_accessor :provider
@@ -21,22 +22,20 @@ module Rockauth
     attr_accessor :token
     attr_accessor :client_secret
 
-    validates_presence_of :user
+    validates_presence_of :resource_owner
     validates_presence_of :expiration
     validates_presence_of :auth_type
     validates_inclusion_of :auth_type, in: %w(password assertion registration)
     validates_presence_of :client_id
     validates_presence_of :client_secret, on: :create
 
-    alias_method :resource_owner, :user
-
     before_validation on: :create do
       self.expiration ||= Time.now.to_i + time_to_live
       if password?
-        self.user = User.with_username(username).first
+        self.resource_owner = resource_owner_class.with_username(username).first
       elsif assertion?
         self.provider_authentication = ProviderAuthentication.for_authentication provider: provider, provider_access_token: provider_token, provider_access_token_secret: provider_secret_token
-        self.user = provider_authentication.user
+        self.resource_owner = provider_authentication.resource_owner
       end
 
       true
@@ -45,7 +44,7 @@ module Rockauth
     validates_presence_of :username, if: :password?, on: :create
     validates_presence_of :password, if: :password?, on: :create
     validate on: :create, if: :password? do
-      if user.present? && !user.authenticate(password)
+      if resource_owner.present? && !resource_owner.authenticate(password)
         errors.add :password, :invalid
       end
     end
@@ -110,7 +109,7 @@ module Rockauth
     end
 
     def token_payload
-      { exp: expiration, user_id: user_id }
+      { exp: expiration, sub: resource_owner_id, sub_type: resource_owner_type }
     end
   end
 end

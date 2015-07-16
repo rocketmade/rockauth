@@ -3,8 +3,8 @@ require 'spec_helper'
 RSpec.describe Rockauth::ProviderAuthentication, type: :model, social_auth: true do
   subject { build(:provider_authentication) }
 
-  it { is_expected.to belong_to :user }
-  it { is_expected.to validate_presence_of :user }
+  it { is_expected.to belong_to :resource_owner }
+  it { is_expected.to validate_presence_of :resource_owner }
   it { is_expected.to validate_presence_of :provider }
   it { is_expected.to validate_presence_of :provider_access_token }
 
