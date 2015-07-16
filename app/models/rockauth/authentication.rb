@@ -10,14 +10,20 @@ module Rockauth
 
     scope :expired, -> { where('expiration <= ?', Time.now.to_i) }
     scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
-    scope :for_token, -> (token) { where(encrypted_token: encrypt_token(token)) }
+    scope :for_token, -> (token) { where(encrypted_token: hash_token(token)) }
 
-    %i(resource_owner_class password username time_to_live token client_secret).each do |key|
+    %i(resource_owner_class password username time_to_live token jwt client_secret).each do |key|
       attr_accessor key
     end
 
+
+    validates_presence_of  :auth_type
+    validates_inclusion_of :auth_type, in: %w(password assertion registration)
+    validates_presence_of  :client_id
+    validates_presence_of  :client_secret, on: :create
     validates_presence_of  :resource_owner
     validates_presence_of  :expiration
+    validates_presence_of  :issued_at
     validates_presence_of  :auth_type
     validates_inclusion_of :auth_type,     in: %w(password assertion registration)
     validates_presence_of  :client_id
@@ -25,6 +31,8 @@ module Rockauth
 
     before_validation on: :create do
       self.expiration ||= Time.now.to_i + time_to_live
+      self.issued_at ||= Time.now.to_i
+
       if password?
         self.resource_owner = resource_owner_class.with_username(username).first
       elsif assertion?
@@ -58,14 +66,10 @@ module Rockauth
       end
     end
 
-    after_initialize do
-      self.salt ||= SecureRandom.base64(12)
-      true
-    end
-
     before_create do
       generate_token
-      encrypt_token
+      generate_jwt
+      hash_token
       true
     end
 
@@ -86,14 +90,15 @@ module Rockauth
     end
 
     def generate_token
-      self.token ||= JWT.encode token_payload, salt, 'HS256'
+      self.token ||= SecureRandom.base64(24)
     end
 
-    def encrypt_token
-      self.encrypted_token ||= self.class.encrypt_token token
+    def hash_token
+      self.encrypted_token ||= self.class.hash_token token
     end
 
-    def self.encrypt_token tok
+    # TODO: Remove salt and BCrypt this?
+    def self.hash_token tok
       Digest::SHA2.hexdigest tok
     end
 
@@ -101,8 +106,25 @@ module Rockauth
       Time.at(expiration) > Time.now
     end
 
-    def token_payload
-      { exp: expiration, sub: resource_owner_id, sub_type: resource_owner_type }
+    def verify! payload
+      self if payload['iat'] == issued_at &&
+              payload['exp'] == expiration &&
+              payload['aud'] == client_id &&
+              payload['sub'] == resource_owner_id
+    end
+
+    def generate_jwt
+      self.jwt ||= JWT.encode jwt_payload, Configuration.jwt.secret, Configuration.jwt.signing_method
+    end
+
+    def jwt_payload
+      {
+        iat: issued_at,
+        exp: expiration,
+        aud: client_id,
+        sub: resource_owner_id,
+        jti: token
+      }
     end
   end
 end

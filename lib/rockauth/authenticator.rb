@@ -14,7 +14,8 @@ module Rockauth
     def self.authentication_from_request request, controller
       bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
       if bearer.to_s.downcase == "bearer" && token.present?
-        Authentication.for_token(token).first
+        payload = JWT.decode(token, Configuration.jwt.secret).first
+        Authentication.for_token(payload['jti']).first.verify! payload
       else
         nil
       end
@@ -40,7 +41,7 @@ module Rockauth
       if authentication_params.has_key? :provider_authentication
         authentication_params[:provider_authentication_attributes] = authentication_params.delete(:provider_authentication)
       end
-      response.authentication = Authentication.new (controller.try(:authentication_options) || {}).merge(authentication_params)
+      response.authentication = Authentication.new((controller.try(:authentication_options) || {}).merge(authentication_params))
       response.apply
     end
 

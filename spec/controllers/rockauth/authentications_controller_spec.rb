@@ -15,7 +15,7 @@ module Rockauth
       context "when authenticated" do
         let(:authentication) { create(:authentication) }
         before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "bearer #{authentication.token}"
+          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
         end
 
         it "returns all authorizations for the current user" do
@@ -230,7 +230,7 @@ module Rockauth
       context "when authenticated" do
         let(:authentication) { create(:authentication) }
         before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "bearer #{authentication.token}"
+          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
         end
 
         context "with no id" do

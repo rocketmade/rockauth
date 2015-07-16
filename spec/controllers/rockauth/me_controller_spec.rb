@@ -124,7 +124,7 @@ module Rockauth
 
       context 'when authenticated' do
         before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "bearer #{authentication.token}"
+          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
         end
         it 'updates the user' do
           expect do
@@ -155,7 +155,7 @@ module Rockauth
 
       context 'when authenticated' do
         before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "bearer #{authentication.token}"
+          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
         end
         it 'shows the user' do
           get :show
@@ -191,7 +191,7 @@ module Rockauth
 
       context 'when authenticated' do
         before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "bearer #{authentication.token}"
+          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
         end
         it 'destroys the user' do
           expect do
