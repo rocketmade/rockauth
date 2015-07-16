@@ -105,12 +105,17 @@ module Rockauth
           end
         end
 
-        it 'includes the authentication token in the response' do
+        it 'includes the authentication token_id in the response' do
           post :authenticate, authentication_parameters
-          expect(parsed_response['authentication']).to have_key 'token'
+          expect(parsed_response['authentication']).to have_key 'token_id'
         end
 
-        it 'includes the authentication token in the response' do
+        it 'includes the authentication jwt in the response' do
+          post :authenticate, authentication_parameters
+          expect(parsed_response['authentication']).to have_key 'jwt'
+        end
+
+        it 'includes the authentication token_id in the response' do
           post :authenticate, authentication_parameters
           expect(parsed_response['authentication']).to have_key 'resource_owner'
         end

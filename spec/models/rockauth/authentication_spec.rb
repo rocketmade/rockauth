@@ -20,9 +20,9 @@ RSpec.describe Rockauth::Authentication, type: :model do
     expect(subject.errors[:client_secret]).to include I18n.t('errors.messages.invalid')
   end
 
-  it 'does not store the token in plain text' do
+  it 'does not store the token_id in plain text' do
     subject.save
-    expect(subject.token).not_to eq subject.encrypted_token
+    expect(subject.token_id).not_to eq subject.hashed_token_id
   end
 
   context 'when it is a password authentication' do

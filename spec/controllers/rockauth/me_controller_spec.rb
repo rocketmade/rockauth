@@ -22,10 +22,10 @@ module Rockauth
         end.to change { User.count }.by 1
       end
 
-      it 'includes the authentication token in the response' do
+      it 'includes the authentication token_id in the response' do
         post :create, parameters
         expect(parsed_response[:user]).to have_key :authentication
-        expect(parsed_response[:user][:authentication]).to have_key :token
+        expect(parsed_response[:user][:authentication]).to have_key :token_id
       end
 
       context "detailed client information is provided" do

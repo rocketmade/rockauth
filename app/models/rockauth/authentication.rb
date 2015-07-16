@@ -10,12 +10,11 @@ module Rockauth
 
     scope :expired, -> { where('expiration <= ?', Time.now.to_i) }
     scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
-    scope :for_token, -> (token) { where(encrypted_token: hash_token(token)) }
+    scope :for_token, -> (token) { where(hashed_token_id: hash_token_id(token)) }
 
-    %i(resource_owner_class password username time_to_live token jwt client_secret).each do |key|
+    %i(resource_owner_class password username time_to_live token_id jwt client_secret).each do |key|
       attr_accessor key
     end
-
 
     validates_presence_of  :auth_type
     validates_inclusion_of :auth_type, in: %w(password assertion registration)
@@ -67,9 +66,9 @@ module Rockauth
     end
 
     before_create do
-      generate_token
+      generate_token_id
       generate_jwt
-      hash_token
+      hash_token_id
       true
     end
 
@@ -89,17 +88,17 @@ module Rockauth
       @time_to_live ||= Configuration.token_time_to_live
     end
 
-    def generate_token
-      self.token ||= SecureRandom.base64(24)
+    def generate_token_id
+      self.token_id ||= SecureRandom.base64(24)
     end
 
-    def hash_token
-      self.encrypted_token ||= self.class.hash_token token
+    def hash_token_id
+      self.hashed_token_id ||= self.class.hash_token_id token_id
     end
 
     # TODO: Remove salt and BCrypt this?
-    def self.hash_token tok
-      Digest::SHA2.hexdigest tok
+    def self.hash_token_id jti
+      Digest::SHA2.hexdigest jti
     end
 
     def active?
@@ -107,7 +106,8 @@ module Rockauth
     end
 
     def verify! payload
-      self if payload['iat'] == issued_at &&
+      self if active? &&
+              payload['iat'] == issued_at &&
               payload['exp'] == expiration &&
               payload['aud'] == client_id &&
               payload['sub'] == resource_owner_id
@@ -123,7 +123,7 @@ module Rockauth
         exp: expiration,
         aud: client_id,
         sub: resource_owner_id,
-        jti: token
+        jti: token_id
       }
     end
   end

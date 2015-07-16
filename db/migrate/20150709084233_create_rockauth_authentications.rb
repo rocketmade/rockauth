@@ -4,9 +4,9 @@ class CreateRockauthAuthentications < ActiveRecord::Migration
       t.references :resource_owner, polymorphic: true
       t.references :provider_authentication, index: true, foreign_key: true
       t.integer :expiration
+      t.integer :issued_at
+      t.string :hashed_token_id
       t.string :auth_type, null: false
-      t.string :salt
-      t.string :encrypted_token
       t.string :client_id, null: false
       t.string :client_version
       t.string :device_identifier
