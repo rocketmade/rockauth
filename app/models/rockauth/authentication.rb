@@ -108,9 +108,7 @@ module Rockauth
     def verify! payload
       self if active? &&
               payload['iat'] == issued_at &&
-              payload['exp'] == expiration &&
-              payload['aud'] == client_id &&
-              payload['sub'] == resource_owner_id
+              payload['exp'] == expiration
     end
 
     def generate_jwt
