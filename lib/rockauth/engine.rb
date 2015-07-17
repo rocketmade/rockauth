@@ -1,3 +1,4 @@
+require 'rails-api'
 
 module Rockauth
   class Engine < ::Rails::Engine

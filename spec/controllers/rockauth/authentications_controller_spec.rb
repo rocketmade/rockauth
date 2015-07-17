@@ -58,7 +58,7 @@ module Rockauth
 
         it 'includes the authentication token in the response' do
           post :authenticate, authentication_parameters
-          expect(parsed_response['authentication']).to have_key 'user'
+          expect(parsed_response['authentication']).to have_key 'resource_owner'
         end
 
         context "when missing authentication parameters" do
@@ -87,7 +87,7 @@ module Rockauth
         let!(:user) { create(:user) }
         let(:client) { create(:client) }
         let(:provider) { }
-        let!(:provider_authentication) { create(:provider_authentication, user: user, provider: provider, provider_user_id: provider_user_id) }
+        let!(:provider_authentication) { create(:provider_authentication, resource_owner: user, provider: provider, provider_user_id: provider_user_id) }
 
         let(:authentication_parameters) do
           { authentication: { auth_type: 'assertion', provider: provider, client_id: client.id, client_secret: client.secret, access_token: 'foo', access_token_secret: 'bar' } }

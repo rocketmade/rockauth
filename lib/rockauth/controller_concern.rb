@@ -15,7 +15,7 @@ module Rockauth
     end
 
     def current_user
-      @current_user ||= current_authentication.try(:user)
+      @current_user ||= current_authentication.try(:resource_owner)
     end
 
     def current_authentication

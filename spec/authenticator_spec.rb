@@ -53,7 +53,7 @@ module Rockauth
             auth_response
           end.to change { Rockauth::Authentication.count }.by 1
           expect(auth_response.success).to be true
-          expect(auth_response.authentication.user).to eq user
+          expect(auth_response.authentication.resource_owner).to eq user
           expect(auth_response.resource_owner).to eq user
         end
 

@@ -47,7 +47,7 @@ module Rockauth
 
     describe 'PATCH update' do
       let(:user) { create(:user) }
-      let(:authentication) { create(:authentication, user: user) }
+      let(:authentication) { create(:authentication, resource_owner: user) }
 
       let(:parameters) do
         { user: { password: 'adifferentpassword123' } }
@@ -84,7 +84,7 @@ module Rockauth
 
     describe 'GET show' do
       let(:user) { create(:user) }
-      let(:authentication) { create(:authentication, user: user) }
+      let(:authentication) { create(:authentication, resource_owner: user) }
 
       let(:parameters) do
         { user: { password: Faker::Internet.password } }
@@ -114,7 +114,7 @@ module Rockauth
 
     describe 'DELETE destroy' do
       let(:user) { create(:user) }
-      let(:authentication) { create(:authentication, user: user) }
+      let(:authentication) { create(:authentication, resource_owner: user) }
 
       let(:parameters) do
         { user: { password: Faker::Internet.password } }

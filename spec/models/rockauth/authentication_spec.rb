@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe Rockauth::Authentication, type: :model do
   subject { build(:password_authentication) }
-  it { is_expected.to belong_to :user }
+  it { is_expected.to belong_to :resource_owner }
 
   it { is_expected.to validate_presence_of :auth_type }
   it { is_expected.to validate_presence_of :client_id }
