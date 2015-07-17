@@ -12,6 +12,10 @@ module Rockauth
       copy_file '../../../config/locales/en.yml', 'config/locales/rockauth.en.yml'
     end
 
+    def copy_clients
+      copy_file 'rockauth_clients.yml', 'config/rockauth_clients.yml'
+    end
+
     def generate_models
       invoke 'rockauth:models'
     end

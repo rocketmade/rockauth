@@ -1,4 +1,4 @@
 module Rockauth
-  class Client < Struct.new(:id, :secret, :title)
+  Client = Struct.new(:id, :secret, :title) do
   end
 end

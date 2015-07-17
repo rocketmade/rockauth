@@ -1,0 +1,9 @@
+# List Rockauth clients for each environment here.
+production:
+#- client_id:     random string
+#  client_secret: secret string
+#  client_title:  iOS Client
+
+development:
+
+test:
