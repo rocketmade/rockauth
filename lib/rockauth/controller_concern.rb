@@ -14,8 +14,8 @@ module Rockauth
       render_unauthorized unless current_authentication.try(:active?)
     end
 
-    def current_user
-      @current_user ||= current_authentication.try(:resource_owner)
+    def current_resource_owner
+      @current_resource_owner ||= current_authentication.try(:resource_owner)
     end
 
     def current_authentication

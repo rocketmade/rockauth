@@ -45,7 +45,7 @@ module Rockauth
     protected
 
     def resource
-      @user ||= current_user
+      @user ||= current_resource_owner
     end
 
     def permitted_params
