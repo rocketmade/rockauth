@@ -9,17 +9,17 @@ Gem::Specification.new do |s|
   s.version     = Rockauth::VERSION
   s.authors     = ['Daniel Evans']
   s.email       = ['evans.daniel.n@gmail.com']
-  s.homepage    = 'TODO'
-  s.summary     = 'TODO: Summary of Rockauth.'
-  s.description = 'TODO: Description of Rockauth.'
+  s.homepage    = 'https://github.com/rocketmade/rockauth'
+  s.summary     = 'An opinionated API Token Authentication mechanism.'
+  s.description = 'An opinionated API Token Authentication mechanism.'
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
 
-  s.add_dependency 'rails', '~> 4.2.3'
-  s.add_dependency 'rails-api', '~> 0.4.0'
-  s.add_dependency 'active_model_serializers', '~> 0.10.0.rc2'
-  s.add_dependency 'bcrypt', '~> 3.1.10'
+  s.add_dependency 'rails', '>= 4.0.0'
+  s.add_dependency 'rails-api', '>= 0.4.0'
+  s.add_dependency 'active_model_serializers', '>= 0.10.0.rc2'
+  s.add_dependency 'bcrypt', '>= 3.1.10'
   s.add_dependency 'jwt'
 
   s.add_development_dependency 'pg'
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_girl_rails'
   s.add_development_dependency 'faker'
   s.add_development_dependency 'twitter'
-  s.add_development_dependency 'fb_graph'
+  s.add_development_dependency 'fb_graph2'
   s.add_development_dependency 'instagram'
   s.add_development_dependency 'google_plus'
   s.add_development_dependency 'webmock'

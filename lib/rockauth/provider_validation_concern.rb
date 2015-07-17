@@ -22,14 +22,16 @@ module Rockauth
         self.provider_user_id = provider_user_information.user_id
       end
 
-      { facebook: 'fb_graph', instagram: 'instagram', twitter: 'twitter', google_plus: 'google_plus' }.each do |key, value|
+      { facebook: 'fb_graph2', instagram: 'instagram', twitter: 'twitter', google_plus: 'google_plus' }.each do |key, value|
         begin
           require value
           provider_network key do
             ProviderUserInformation.for_provider(provider, provider_access_token, provider_access_token_secret)
           end
         rescue LoadError
-          Rails.logger.warn "Rockauth: Could not load the #{value} gem, #{key.to_s.humanize} provider authentication disabled"
+          if Rockauth::Configuration.warn_missing_social_auth_gems
+            warn "Rockauth: Could not load the #{value} gem, #{key.to_s.humanize} provider authentication disabled"
+          end
         end
       end
     end
