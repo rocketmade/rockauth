@@ -5,6 +5,8 @@ module Rockauth
     self.table_name = 'users'
     include ResourceOwnerConcern
 
+    resource_owner
+
     validates_presence_of :email, if: :email_required?
     validates_format_of :email, with: /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/, if: -> { (new_record? || email_changed?) }, allow_blank: true
 

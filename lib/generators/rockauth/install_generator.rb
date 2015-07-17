@@ -27,5 +27,12 @@ module Rockauth
     def install_route
       route 'mount Rockauth::Engine => "/"'
     end
+
+    def declare_dependencies
+      gem 'fb_graph2'
+      gem 'twitter'
+      gem 'google_plus'
+      gem 'instagram'
+    end
   end
 end
