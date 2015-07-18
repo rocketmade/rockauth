@@ -17,24 +17,24 @@ module Rockauth
     attr_accessor :username
     attr_accessor :provider
     attr_accessor :provider_token
-    attr_accessor :provider_secret_token
+    attr_accessor :provider_token_secret
     attr_accessor :time_to_live
     attr_accessor :token
     attr_accessor :client_secret
 
-    validates_presence_of :resource_owner
-    validates_presence_of :expiration
-    validates_presence_of :auth_type
-    validates_inclusion_of :auth_type, in: %w(password assertion registration)
-    validates_presence_of :client_id
-    validates_presence_of :client_secret, on: :create
+    validates_presence_of  :resource_owner
+    validates_presence_of  :expiration
+    validates_presence_of  :auth_type
+    validates_inclusion_of :auth_type,     in: %w(password assertion registration)
+    validates_presence_of  :client_id
+    validates_presence_of  :client_secret, on: :create
 
     before_validation on: :create do
       self.expiration ||= Time.now.to_i + time_to_live
       if password?
         self.resource_owner = resource_owner_class.with_username(username).first
       elsif assertion?
-        self.provider_authentication = ProviderAuthentication.for_authentication provider: provider, provider_access_token: provider_token, provider_access_token_secret: provider_secret_token
+        self.provider_authentication = ProviderAuthentication.for_authentication provider: provider, provider_access_token: provider_token, provider_access_token_secret: provider_token_secret, authentication: self
         self.resource_owner = provider_authentication.resource_owner
       end
 

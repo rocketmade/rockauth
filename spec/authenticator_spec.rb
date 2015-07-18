@@ -77,18 +77,46 @@ module Rockauth
       end # ~ when authenticating with a password
 
 
-      context "when authenticating with an assertion", pending: "Not Implemented" do
-        context "facebook" do
-
+      context "when authenticating with an assertion", social_auth: true do
+        let(:client)   { create(:client) }
+        let(:provider) { }
+        let(:token)    { 'token' }
+        let(:secret)   { 'secret' }
+        let(:authentication_parameters) do
+          { authentication: { auth_type: 'assertion', provider: provider, provider_token: token, provider_token_secret: secret, client_id: client.id, client_secret: client.secret } }
         end
 
-        context "twitter" do
+        # TODO: these errors should reflect how the client passed them up, not our model structure
+
+        context "when missing the provider parameter" do
+          it "provides a meaningful error" do
+            expect(auth_response.error.validation_errors).not_to be_blank
+            expect(auth_response.error.validation_errors).to have_key :"provider_authentication.provider"
+            expect(auth_response.error.validation_errors[:"provider_authentication.provider"].join(' ')).to match /can't be blank/
+          end
         end
 
-        context "instagram" do
+        %w(facebook twitter google_plus instagram).each do |network|
+          context "facebook" do
+            let(:provider) { network }
+
+            it "authenticates the user" do
+              expect do
+                auth_response
+              end.to change { Rockauth::Authentication.count }.by 1
+              expect(auth_response.success).to be true
+              expect(auth_response.authentication.resource_owner).to be_an_instance_of Rockauth::User
+              expect(auth_response.resource_owner).to eq auth_response.authentication.resource_owner
+            end
+
+            it "creates the user" do
+              expect do
+                auth_response
+              end.to change { Rockauth::User.count }.by 1
+            end
+          end
         end
       end # ~ when authenticating with an assertion
-
     end # ~ .from_request
   end
 end
