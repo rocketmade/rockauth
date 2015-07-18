@@ -89,6 +89,11 @@ module Rockauth
         # TODO: these errors should reflect how the client passed them up, not our model structure
 
         context "when missing the provider parameter" do
+          it "gives errors for virtual attributes" do
+            expect(auth_response.error.validation_errors).not_to be_blank
+            expect(auth_response.error.validation_errors).to have_key :provider
+            expect(auth_response.error.validation_errors[:provider].join(' ')).to match /can't be blank/
+          end
           it "provides a meaningful error" do
             expect(auth_response.error.validation_errors).not_to be_blank
             expect(auth_response.error.validation_errors).to have_key :"provider_authentication.provider"

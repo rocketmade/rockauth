@@ -12,15 +12,9 @@ module Rockauth
     scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
     scope :for_token, -> (token) { where(encrypted_token: encrypt_token(token)) }
 
-    attr_accessor :resource_owner_class
-    attr_accessor :password
-    attr_accessor :username
-    attr_accessor :provider
-    attr_accessor :provider_token
-    attr_accessor :provider_token_secret
-    attr_accessor :time_to_live
-    attr_accessor :token
-    attr_accessor :client_secret
+    %i(resource_owner_class password username provider provider_token provider_token_secret time_to_live token client_secret).each do |key|
+      attr_accessor key
+    end
 
     validates_presence_of  :resource_owner
     validates_presence_of  :expiration
@@ -39,6 +33,12 @@ module Rockauth
       end
 
       true
+    end
+
+    after_validation on: :create, if: :assertion? do
+      %i(provider provider_access_token provider_access_token_secret).each do |key|
+        self.errors[key].push(*provider_authentication.errors[key])
+      end
     end
 
     validates_presence_of :username, if: :password?, on: :create
