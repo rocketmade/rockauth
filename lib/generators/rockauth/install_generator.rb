@@ -1,3 +1,4 @@
+require_relative './client_generator.rb'
 module Rockauth
   class InstallGenerator < Rails::Generators::Base
     source_root File.expand_path('../../templates', __FILE__)
@@ -26,6 +27,10 @@ module Rockauth
 
     def install_route
       route 'mount Rockauth::Engine => "/"'
+    end
+
+    def generate_development_client
+      invoke 'rockauth:client', ['Default Client'], environment: 'development'
     end
 
     def declare_dependencies

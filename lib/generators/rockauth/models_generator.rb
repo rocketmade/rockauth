@@ -4,8 +4,8 @@ module Rockauth
 
     def install_models
       template 'user.rb', 'app/models/user.rb'
-      invoke 'active_record:model', ['authentication'], parent: 'Rockauth::Authentication', migrate: false
-      invoke 'active_record:model', ['provider_authentication'], parent: 'Rockauth::ProviderAuthentication', migrate: false
+      template 'provider_authentication.rb', 'app/models/provider_authentication.rb'
+      template 'authentication.rb', 'app/models/authentication.rb'
     end
   end
 end
