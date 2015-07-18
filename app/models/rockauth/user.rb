@@ -3,7 +3,7 @@ require 'active_record'
 module Rockauth
   class User < ActiveRecord::Base
     self.table_name = 'users'
-    include ResourceOwnerConcern
+    include Models::ResourceOwner
 
     resource_owner
 

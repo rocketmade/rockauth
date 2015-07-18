@@ -5,7 +5,7 @@ module Rockauth
     self.table_name = 'provider_authentications'
     belongs_to :resource_owner, polymorphic: true
 
-    include ProviderValidationConcern
+    include Models::ProviderValidation
 
     validates_presence_of   :resource_owner
     validates_uniqueness_of :provider_user_id, scope: :provider

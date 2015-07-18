@@ -40,8 +40,12 @@ module Rockauth
         user.try(:id)
       end
 
+      def picture_url
+        user.profile_image_url_https(:bigger).to_s
+      end
+
       def get_user
-        twitter_client.verify_credentials
+        twitter_client.verify_credentials(skip_status: 1)
       end
 
       private
@@ -54,9 +58,7 @@ module Rockauth
           config.access_token_secret = access_token_secret
         end
       end
-
     end
-
 
     class GooglePlus < ProviderUserInformation
       def user_id

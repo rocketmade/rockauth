@@ -7,16 +7,9 @@ module Rockauth
       self.resource_owner = authentication.resource_owner # owner is set before_validation
     end
 
-    def status_code
-      if @error.present?
-        @error.status_code
-      else
-      end
-    end
-
     def error
-      if authentication.present? && !authentication.errors.empty?
-        @error ||= Errors::ControllerError.new 400, I18n.t("rockauth.errors.authentication_failed"), authentication.errors.as_json
+      unless success
+        @error ||= Errors::ControllerError.new 400, I18n.t("rockauth.errors.authentication_failed"), authentication.try(:errors).as_json
       end
     end
 

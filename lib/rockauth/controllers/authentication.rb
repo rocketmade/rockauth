@@ -1,5 +1,5 @@
 module Rockauth
-  module ControllerConcern
+  module Controllers::Authentication
     extend ActiveSupport::Concern
 
     def render_error status_code=500, message=I18n.t("rockauth.errors.server_error"), validation_errors=nil

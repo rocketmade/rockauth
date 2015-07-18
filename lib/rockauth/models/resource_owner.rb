@@ -1,5 +1,5 @@
 module Rockauth
-  module ResourceOwnerConcern
+  module Models::ResourceOwner
     extend ActiveSupport::Concern
 
     module ClassMethods

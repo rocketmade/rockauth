@@ -1,5 +1,5 @@
 module Rockauth
-  module ProviderValidationConcern
+  module Models::ProviderValidation
     extend ActiveSupport::Concern
     attr_accessor :provider_user_information
 

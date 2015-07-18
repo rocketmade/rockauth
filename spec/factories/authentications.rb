@@ -4,14 +4,20 @@ FactoryGirl.define do
     auth_type 'registration'
     client_id { Rockauth::Configuration.clients.first.id }
     client_secret { Rockauth::Configuration.clients.first.secret }
+    resource_owner_class Rockauth::User
 
     factory :registration_authentication do
 
     end
 
+    factory :invalid_authentication do
+      auth_type 'password'
+      username nil
+      password nil
+    end
+
     factory :password_authentication do
       auth_type 'password'
-      resource_owner_class Rockauth::User
       username { resource_owner.email }
       password { resource_owner.password }
     end
