@@ -83,17 +83,11 @@ module Rockauth
         let(:token)    { 'token' }
         let(:secret)   { 'secret' }
         let(:authentication_parameters) do
-          { authentication: { auth_type: 'assertion', provider: provider, provider_token: token, provider_token_secret: secret, client_id: client.id, client_secret: client.secret } }
+          { authentication: { auth_type: 'assertion', provider_authentication: { provider: provider, provider_access_token: token, provider_access_token_secret: secret }, client_id: client.id, client_secret: client.secret } }
         end
 
-        # TODO: these errors should reflect how the client passed them up, not our model structure
-
         context "when missing the provider parameter" do
-          it "gives errors for virtual attributes" do
-            expect(auth_response.error.validation_errors).not_to be_blank
-            expect(auth_response.error.validation_errors).to have_key :provider
-            expect(auth_response.error.validation_errors[:provider].join(' ')).to match /can't be blank/
-          end
+
           it "provides a meaningful error" do
             expect(auth_response.error.validation_errors).not_to be_blank
             expect(auth_response.error.validation_errors).to have_key :"provider_authentication.provider"
@@ -102,12 +96,13 @@ module Rockauth
         end
 
         %w(facebook twitter google_plus instagram).each do |network|
-          context "facebook" do
+          context network do
             let(:provider) { network }
 
             it "authenticates the user" do
               expect do
                 auth_response
+                puts auth_response.error
               end.to change { Rockauth::Authentication.count }.by 1
               expect(auth_response.success).to be true
               expect(auth_response.authentication.resource_owner).to be_an_instance_of Rockauth::User

@@ -8,7 +8,7 @@ module Rockauth
     resource_owner
 
     validates_presence_of :email, if: :email_required?
-    validates_format_of :email, with: /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/, if: -> { (new_record? || email_changed?) }, allow_blank: true
+    validates_format_of   :email, with: /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/, if: -> { (new_record? || email_changed?) }, allow_blank: true
 
     has_secure_password   validations: false
     validates_presence_of :password, if: :password_required?

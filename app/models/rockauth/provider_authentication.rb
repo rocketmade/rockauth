@@ -25,14 +25,11 @@ module Rockauth
       end
     end
 
-    def self.for_authentication provider: , provider_access_token: , provider_access_token_secret: nil, authentication:
-      auth = ProviderAuthentication.new(provider: provider, provider_access_token: provider_access_token, provider_access_token_secret: provider_access_token_secret, authentication: authentication)
-      auth.configure_from_provider
-      auth.exchange
-    end
-
     def exchange
       result = self
+
+      configure_from_provider
+
       if provider_user_id.present? && provider.present?
         result = ProviderAuthentication.where(provider: provider, provider_user_id: provider_user_id).first
         if result.present?

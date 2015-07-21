@@ -33,6 +33,7 @@ module Rockauth
             expect(parsed_response['error']['validation_errors'][key]).to include 'can\'t be blank'
           end
         end
+
       end
 
       context "when authenticating with a password" do
@@ -81,53 +82,88 @@ module Rockauth
             expect(parsed_response['error']['validation_errors']['password'].join(' ')).to match /can't be blank/
           end
         end
+
+        context "when the client_id is incorrect" do
+
+          let(:authentication_parameters) do
+            { authentication: { auth_type: 'password', client_id: 'foo', client_secret: client.secret, username: user.email, password: user.password } }
+          end
+
+          it 'provides a meaningful error' do
+            post :authenticate, authentication_parameters
+            expect(parsed_response['error']['validation_errors']).not_to be_blank
+            expect(parsed_response['error']['validation_errors']).to have_key 'client_id'
+          end
+        end
+
+        context "when the client_secret is incorrect" do
+          let(:authentication_parameters) do
+            { authentication: { auth_type: 'password', client_id: client.id, client_secret: 'client.secret', username: user.email, password: user.password } }
+          end
+
+          it 'provides a meaningful error' do
+            post :authenticate, authentication_parameters
+            expect(parsed_response['error']['validation_errors']).not_to be_blank
+            expect(parsed_response['error']['validation_errors']).to have_key 'client_secret'
+          end
+        end
       end
 
       context "when authenticating with an assertion", social_auth: true do
         let!(:user) { create(:user) }
         let(:client) { create(:client) }
         let(:provider) { }
-        let!(:provider_authentication) { create(:provider_authentication, resource_owner: user, provider: provider, provider_user_id: provider_user_id) }
+        let(:provider_authentication) { create(:provider_authentication, resource_owner: user, provider: provider, provider_user_id: provider_user_id) }
 
         let(:authentication_parameters) do
-          { authentication: { auth_type: 'assertion', provider: provider, client_id: client.id, client_secret: client.secret, access_token: 'foo', access_token_secret: 'bar' } }
+          { authentication: { auth_type: 'assertion', client_id: client.id, client_secret: client.secret, provider_authentication: { provider: provider, provider_access_token: 'foo', provider_access_token_secret: 'bar' } } }
         end
 
-        context "facebook" do
-          let(:provider) { 'facebook' }
+        context "non-existant provider" do
+          let(:provider) { 'narcissists_book' }
 
-          it "authenticates" do
+          it "is not successful" do
             post :authenticate, authentication_parameters
-            expect(response).to be_success
+            expect(response).not_to be_success
+            expect(response.status).to eq 400
           end
         end
 
-        context "twitter" do
-          let(:provider) { 'twitter' }
+        %w(facebook twitter google_plus instagram).each do |prov|
+          context prov do
+            let(:provider) { prov }
 
-          it "authenticates" do
-            post :authenticate, authentication_parameters
-            expect(response).to be_success
+            it "creates a new user and authenticates" do
+              expect {
+                post :authenticate, authentication_parameters
+              }.to change { User.count }.by 1
+              expect(response).to be_success
+              expect(parsed_response['authentication']['resource_owner']['id']).to eq User.last.id
+              expect(parsed_response['authentication']['provider_authentication']['provider']).to eq provider
+            end
+
+            it "authenticates with the existing user" do
+              provider_authentication
+              expect {
+                post :authenticate, authentication_parameters
+              }.not_to change { [User.count, ProviderAuthentication.count] }
+              expect(response).to be_success
+              expect(parsed_response['authentication']['resource_owner']['id']).to eq user.id
+              expect(parsed_response['authentication']['provider_authentication']['id']).to eq provider_authentication.id
+            end
+
+            context "provider authentication fails" do
+              let(:provider_user_id) { nil }
+              it "does not authenticate" do
+                expect {
+                  post :authenticate, authentication_parameters
+                }.not_to change { Authentication.count }
+                expect(response).not_to be_success
+              end
+            end
           end
         end
 
-        context "instagram" do
-          let(:provider) { 'instagram' }
-
-          it "authenticates" do
-            post :authenticate, authentication_parameters
-            expect(response).to be_success
-          end
-        end
-
-        context "google_plus" do
-          let(:provider) { 'google_plus' }
-
-          it "authenticates" do
-            post :authenticate, authentication_parameters
-            expect(response).to be_success
-          end
-        end
       end
     end
   end

@@ -49,7 +49,7 @@ module Rockauth
     end
 
     def permitted_params
-      permitted = params.permit(user: [*%i(email password), authentication: [*%i(auth_type client_id client_secret)], provider_authentications: []])
+      permitted = params.permit(user: [*%i(email password), authentication: [*%i(auth_type client_id client_secret)]])
       user_params = permitted.fetch(:user, {})
 
       if action_name == 'update'

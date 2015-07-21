@@ -37,7 +37,138 @@ Configuration can be found in `config/initializers/rockauth.rb`
 
 ### API Usage
 
-TODO: describe how to use the API
+#### Authentication Endpoint
+
+##### Create Authentication
+
+```
+POST /api/authentications.json
+```
+
+This endpoint is meant to be used to authenticate. However, it has implicit registration behavior when a social network is used to authenticate which is not currently associated with an account.
+
+Request JSON:
+
+```ruby
+{
+  "authentication": {
+    "auth_type":             <string>, # password|assertion                        - Required
+    "client_id":             <string>, # -                                         - Required
+    "client_secret":         <string>, # -                                         - Required
+    "username":              <string>, # -                                         - Required iff auth_type is "password"
+    "password":              <string>, # -                                         - Required iff auth_type is "password"
+    "provider_authentication": { # - Required iff auth_type is "assertion"
+      "provider":                     <string>, # facebook|google_plus|twitter|instagram - Required iff auth_type is "assertion"
+      "provider_access_token":        <string>, # -                                      - Required iff auth_type is "assertion"
+      "provider_access_token_secret": <string>  # -                                      - Required iff auth_type is "assertion" and the provider (such as twitter) requires it.
+    }
+  }
+}
+```
+
+Successful Response (HTTP Status 200):
+
+```ruby
+{
+  "authentication": {
+    "id":         19,
+    "token":      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0Njg5OTkyMzYsInN1YiI6MjQsInN1Yl90eXBlIjoiUm9ja2F1dGg6OlVzZXIifQ.6IjndZmuiPVdbEm1xGhAdvHYHuVxB8pTmzqmz3wrye0",
+    "expiration": 1468999236,
+    "resource_owner": {
+      "id":    24,
+      "email": "rm@example.org"
+    },
+    "provider_authentication": {
+      "id": 10
+    }
+  }
+}
+```
+
+Example Error Response (HTTP Status 400):
+
+```ruby
+{
+  "error": {
+    "status_code": 400,
+    "message": "Authentication failure.",
+    "validation_errors": {
+      "resource_owner": ["can't be blank", "is not included in the list"],
+      "auth_type":      ["can't be blank", "is not included in the list"],
+      "client_id":      ["can't be blank", "is invalid"],
+      "client_secret":  ["can't be blank", "is invalid"],
+
+      "provider_authentication.provider":              ["is invalid", "is not included in the list"],
+      "provider_authentication.provider_access_token": ["is invalid"]
+    }
+  }
+}
+```
+
+##### Create User (Registration)
+
+```
+POST /api/me.json
+```
+
+This endpoint is meant to be used for registration purposes. Client ID and Secret are still required and an authentication object will be returned which can be used to authenticate future API requests as that user.
+
+Request JSON:
+
+```ruby
+{
+  "user": {
+    "email":    <string>, # - Optional
+    "password": <string>, # - Optional
+    "authentication": { # - Required
+      "client_id":      <string>, # - Required
+      "client_secret":  <string>  # - Required
+    },
+    "provider_authentications": [{ # - Optional
+      "provider":                     <string>, # - Required
+      "provider_access_token":        <string>, # - Required
+      "provider_access_token_secret": <string>  # - Required iff the provider (such as twitter) requires it.
+    }] # Any number accepted
+  }
+}
+```
+
+Successful Response (HTTP Status 200):
+
+```ruby
+{
+  "user": {
+    email: <string>,
+    "provider_authentications": [...],
+    "authentication": {
+      "id":         <integer>,
+      "token":      <string>,
+      "expiration": <integer>
+    }
+  }
+}
+```
+
+Example Error Response (HTTP Status 400):
+
+```ruby
+{
+  "error": {
+    "status_code": 400,
+    "message": "User could not be created.",
+    "validation_errors": {
+      "email":          ["is invalid"]
+      "resource_owner": ["can't be blank", "is not included in the list"],
+      "auth_type":      ["can't be blank", "is not included in the list"],
+      "client_id":      ["can't be blank", "is invalid"],
+      "client_secret":  ["can't be blank", "is invalid"],
+
+      "provider_authentication.provider":              ["is invalid", "is not included in the list"],
+      "provider_authentication.provider_access_token": ["is invalid"]
+    }
+  }
+}
+```
 
 ## Supported Versions
 

@@ -37,12 +37,15 @@ module Rockauth
     def authenticate resource_owner_class=self.class.default_resource_owner_class
       self.response = Response.new false
       authentication_params = params.permit(authentication: authentication_permitted_params).fetch(:authentication, {}).merge(resource_owner_class: resource_owner_class)
+      if authentication_params.has_key? :provider_authentication
+        authentication_params[:provider_authentication_attributes] = authentication_params.delete(:provider_authentication)
+      end
       response.authentication = Authentication.new (controller.try(:authentication_options) || {}).merge(authentication_params)
       response.apply
     end
 
     def authentication_permitted_params
-      %i(auth_type client_id client_secret username password provider provider_token provider_token_secret)
+      [*%i(auth_type client_id client_secret username password), provider_authentication: %i(provider provider_access_token provider_access_token_secret)]
     end
   end
 end

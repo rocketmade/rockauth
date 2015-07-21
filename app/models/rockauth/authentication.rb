@@ -12,7 +12,7 @@ module Rockauth
     scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
     scope :for_token, -> (token) { where(encrypted_token: encrypt_token(token)) }
 
-    %i(resource_owner_class password username provider provider_token provider_token_secret time_to_live token client_secret).each do |key|
+    %i(resource_owner_class password username time_to_live token client_secret).each do |key|
       attr_accessor key
     end
 
@@ -28,17 +28,13 @@ module Rockauth
       if password?
         self.resource_owner = resource_owner_class.with_username(username).first
       elsif assertion?
-        self.provider_authentication = ProviderAuthentication.for_authentication provider: provider, provider_access_token: provider_token, provider_access_token_secret: provider_token_secret, authentication: self
+        build_provider_authentication unless self.provider_authentication.present?
+        provider_authentication.authentication = self
+        self.provider_authentication = provider_authentication.exchange
         self.resource_owner = provider_authentication.resource_owner
       end
 
       true
-    end
-
-    after_validation on: :create, if: :assertion? do
-      %i(provider provider_access_token provider_access_token_secret).each do |key|
-        self.errors[key].push(*provider_authentication.errors[key])
-      end
     end
 
     validates_presence_of :username, if: :password?, on: :create
@@ -50,9 +46,6 @@ module Rockauth
     end
 
     validates_presence_of :provider_authentication, if: :assertion?, on: :create
-    validate on: :create, if: :assertion? do
-      errors.add :provider_token, :invalid unless provider_authentication.valid?
-    end
 
     validate on: :create do
       if client_id.present?
