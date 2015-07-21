@@ -3,6 +3,7 @@
 
 By [Rocketmade](http://rocketmade.com).
 
+Rockauth is an API authentication mechanism for Rails applications which uses [JSON Web Tokens (JWT)](https://en.wikipedia.org/wiki/JSON_Web_Token) as an authentication token.
 
 ## Installation
 
@@ -71,15 +72,16 @@ Successful Response (HTTP Status 200):
 ```ruby
 {
   "authentication": {
-    "id":         19,
-    "token":      "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0Njg5OTkyMzYsInN1YiI6MjQsInN1Yl90eXBlIjoiUm9ja2F1dGg6OlVzZXIifQ.6IjndZmuiPVdbEm1xGhAdvHYHuVxB8pTmzqmz3wrye0",
-    "expiration": 1468999236,
+    "id":         <integer>,
+    "token":      <string>, # JWT
+    "expiration": <integer>,
     "resource_owner": {
-      "id":    24,
-      "email": "rm@example.org"
+      "id":    <integer>,
+      "email": <string>
     },
     "provider_authentication": {
-      "id": 10
+      "id":       <integer>,
+      "provider": <string>
     }
   }
 }
@@ -142,7 +144,7 @@ Successful Response (HTTP Status 200):
     "provider_authentications": [...],
     "authentication": {
       "id":         <integer>,
-      "token":      <string>,
+      "token":      <string>, # JWT
       "expiration": <integer>
     }
   }
