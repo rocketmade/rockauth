@@ -1,2 +1,2 @@
-class Provider < Rockauth::Provider
+class Authentication < Rockauth::Authentication
 end

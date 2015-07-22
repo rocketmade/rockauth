@@ -26,7 +26,11 @@ module Rockauth
     end
 
     def install_route
-      route 'mount Rockauth::Engine => "/"'
+      route <<ROUTE
+namespace :api do
+  mount Rockauth::Engine => "/"'
+end
+ROUTE
     end
 
     def generate_development_client

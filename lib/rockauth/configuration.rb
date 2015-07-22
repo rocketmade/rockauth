@@ -1,10 +1,5 @@
 module Rockauth
-  def self.configure
-    yield Configuration if block_given?
-    Configuration
-  end
-
-  Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients resource_owner_class warn_missing_social_auth_gems)) do
+  Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients resource_owner_class warn_missing_social_auth_gems twitter)) do
     def resource_owner_class= arg
       @constantized_resource_owner_class = nil
       @resource_owner_class = arg
@@ -18,6 +13,12 @@ module Rockauth
     config.token_time_to_live = 365 * 24 * 60 * 60
     config.clients = []
     config.resource_owner_class = 'Rockauth::User'
-    warn_missing_social_auth_gems = true
+    config.warn_missing_social_auth_gems = true
+    config.twitter = Struct.new(:consumer_key, :consumer_secret)
+  end
+
+  def self.configure
+    yield Configuration if block_given?
+    Configuration
   end
 end
