@@ -38,6 +38,7 @@ module Rockauth
       gem 'twitter'
       gem 'google_plus'
       gem 'instagram'
+      gem 'active_model_serializers', '~> 0.8.3'
     end
   end
 end
