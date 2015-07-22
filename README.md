@@ -214,7 +214,14 @@ PUT|PATCH /api/me.json
 
 This endpoint is meant to be used to update the currently logged in user. See the JSON request and response data for `POST /api/me.json`.
 
-The `authentication` data is not required.
+
+##### Delete Current User
+
+```
+DELETE /api/me.json
+```
+
+This endpoint is meant to be used to delete the account and all associated data. If the user cannot be destroyed, expect an `HTTP 409` with error JSON as described above
 
 
 ## Supported Versions
