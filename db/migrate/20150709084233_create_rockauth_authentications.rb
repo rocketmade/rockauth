@@ -9,7 +9,10 @@ class CreateRockauthAuthentications < ActiveRecord::Migration
       t.string :encrypted_token
       t.string :client_id, null: false
       t.string :client_version
-      t.string :client_os
+      t.string :device_identifier
+      t.string :device_description
+      t.string :device_os
+      t.string :device_os_version
 
       t.timestamps null: false
     end

@@ -58,6 +58,11 @@ Request JSON:
     "client_secret":         <string>, # -                                         - Required
     "username":              <string>, # -                                         - Required iff auth_type is "password"
     "password":              <string>, # -                                         - Required iff auth_type is "password"
+    "client_version":        <string>, # -                                         - Optional
+    "device_identifier":     <string>, # -                                         - Optional
+    "device_description":    <string>, # -                                         - Optional
+    "device_os":             <string>, # -                                         - Optional
+    "device_os_version":     <string>, # -                                         - Optional
     "provider_authentication": { # - Required iff auth_type is "assertion"
       "provider":                     <string>, # facebook|google_plus|twitter|instagram - Required iff auth_type is "assertion"
       "provider_access_token":        <string>, # -                                      - Required iff auth_type is "assertion"
@@ -107,6 +112,22 @@ Example Error Response (HTTP Status 400):
 }
 ```
 
+###### Index Authorizations (List all logged-in devices)
+
+```
+GET /api/authorizations.json
+```
+
+This endpoint deletes an authorization token, effectively logging the user out. If an ID is provided, that authentication will be deleted. If no id is provided, the current authentication token is deleted.
+
+##### Delete Authorization (Log Out)
+
+```
+DELETE /api/authorizations(/:id)?.json
+```
+
+This endpoint deletes an authorization token, effectively logging the user out. If an ID is provided, that authentication will be deleted. If no id is provided, the current authentication token is deleted.
+
 ##### Create User (Registration)
 
 ```
@@ -120,11 +141,16 @@ Request JSON:
 ```ruby
 {
   "user": {
-    "email":    <string>, # - Optional
-    "password": <string>, # - Optional
+    "email":    <string>, # - Required if no provider authentications are given
+    "password": <string>, # - Required if no provider authentications are given
     "authentication": { # - Required
-      "client_id":      <string>, # - Required
-      "client_secret":  <string>  # - Required
+      "client_id":             <string>, # - Required
+      "client_secret":         <string>, # - Required
+      "client_version":        <string>, # - Optional
+      "device_identifier":     <string>, # - Optional
+      "device_description":    <string>, # - Optional
+      "device_os":             <string>, # - Optional
+      "device_os_version":     <string>  # - Optional
     },
     "provider_authentications": [{ # - Optional
       "provider":                     <string>, # - Required
@@ -171,6 +197,25 @@ Example Error Response (HTTP Status 400):
   }
 }
 ```
+
+##### Get Current User
+
+```
+GET /api/me.json
+```
+
+This endpoint is meant to be used to get the currently logged in user. See the JSON response for `POST /api/me.json`
+
+##### Update Current User
+
+```
+PUT|PATCH /api/me.json
+```
+
+This endpoint is meant to be used to update the currently logged in user. See the JSON request and response data for `POST /api/me.json`.
+
+The `authentication` data is not required.
+
 
 ## Supported Versions
 

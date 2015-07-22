@@ -57,13 +57,19 @@ module Rockauth
     end
 
     def permitted_params
-      permitted = params.permit(user: [*%i(email password), authentication: [*%i(auth_type client_id client_secret)]])
+      permitted = params.permit(user: [*%i(email password),
+                                       provider_authentications: [:provider, :provider_access_token, :provider_access_token_secret],
+                                       authentication: [*%i(auth_type client_id client_secret client_version device_identifier device_description device_os device_os_version)]])
       user_params = permitted.fetch(:user, {})
 
       if action_name == 'update'
         user_params.delete :authentication
       elsif user_params.has_key? :authentication
         user_params[:authentications_attributes] = [user_params.delete(:authentication).merge(auth_type: 'registration')]
+      end
+
+      if user_params.has_key? :provider_authentications
+        user_params[:provider_authentications_attributes] = user_params.delete(:provider_authentications)
       end
 
       permitted

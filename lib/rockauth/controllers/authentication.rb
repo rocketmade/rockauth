@@ -7,7 +7,7 @@ module Rockauth
     end
 
     def render_unauthorized
-      render_error 403, I18n.t("rockauth.errors.unauthorized")
+      render_error 401, I18n.t("rockauth.errors.unauthorized")
     end
 
     def authenticate_resource_owner!

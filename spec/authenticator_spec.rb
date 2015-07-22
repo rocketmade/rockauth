@@ -102,7 +102,6 @@ module Rockauth
             it "authenticates the user" do
               expect do
                 auth_response
-                puts auth_response.error
               end.to change { Rockauth::Authentication.count }.by 1
               expect(auth_response.success).to be true
               expect(auth_response.authentication.resource_owner).to be_an_instance_of Rockauth::User

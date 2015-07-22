@@ -28,6 +28,29 @@ module Rockauth
         expect(parsed_response[:user][:authentication]).to have_key :token
       end
 
+      context "detailed client information is provided" do
+        let(:authentication_attributes) do
+          {
+            client_id: client.id,
+            client_secret: client.secret,
+            client_version: '1.2.2',
+            device_identifier: 'foo_device',
+            device_os: 'iOS - super touchy sexy edition',
+            device_os_version: '30.0.1.2-patch231',
+            device_description: 'Rocketmade Spare iPhablet'
+          }
+        end
+
+        it "records detailed information to the authentication" do
+          post :create, parameters
+          auth = assigns(:user).authentications.first
+          %i(client_version device_identifier device_os device_os_version device_description).each do |key|
+            expect(auth.public_send(key)).to eq authentication_attributes[key]
+          end
+        end
+      end
+
+
       context 'the client information is incorrect' do
         let(:authentication_attributes) do
           { client_id: 'bad', client_secret: 'info' }
@@ -41,6 +64,36 @@ module Rockauth
 
         it 'gives meaningful errors' do
           post :create, parameters
+          expect(parsed_response[:error][:message]).to match /could not be/
+        end
+      end
+
+      context 'the username and password are not present' do
+        let(:user_attributes) { {} }
+
+        it 'does not create the user' do
+          expect do
+            post :create, parameters
+          end.not_to change { User.count }
+        end
+
+        it 'gives meaningful errors' do
+          post :create, parameters
+          expect(response).not_to be_success
+          expect(parsed_response[:error][:message]).to match /could not be/
+          expect(parsed_response[:error][:validation_errors]).to have_key :email
+          expect(parsed_response[:error][:validation_errors]).to have_key :password
+        end
+
+        context 'when provider authentication data is given', social_auth: true do
+          let(:user_attributes) { { provider_authentications: [{ provider: 'facebook', provider_access_token: 'foo' }]} }
+
+          it 'creates the user' do
+            expect do
+              post :create, parameters
+            end.to change { User.count }.by 1
+          end
+
         end
       end
     end
@@ -57,7 +110,7 @@ module Rockauth
         it 'raises an error' do
           post :update
           expect(response).not_to be_success
-          expect(response.status).to eq 403
+          expect(response.status).to eq 401
           error_body = JSON.parse(response.body)
           expect(error_body['error']['message']).to eq I18n.t('rockauth.errors.unauthorized')
         end
@@ -94,7 +147,7 @@ module Rockauth
         it 'raises an error' do
           get :show
           expect(response).not_to be_success
-          expect(response.status).to eq 403
+          expect(response.status).to eq 401
           error_body = JSON.parse(response.body)
           expect(error_body['error']['message']).to eq I18n.t('rockauth.errors.unauthorized')
         end
@@ -124,7 +177,7 @@ module Rockauth
         it 'raises an error' do
           delete :destroy
           expect(response).not_to be_success
-          expect(response.status).to eq 403
+          expect(response.status).to eq 401
           error_body = JSON.parse(response.body)
           expect(error_body['error']['message']).to eq I18n.t('rockauth.errors.unauthorized')
         end

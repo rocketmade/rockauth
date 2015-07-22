@@ -3,7 +3,7 @@ require 'active_record'
 module Rockauth
   class ProviderAuthentication < ActiveRecord::Base
     self.table_name = 'provider_authentications'
-    belongs_to :resource_owner, polymorphic: true
+    belongs_to :resource_owner, polymorphic: true, inverse_of: :provider_authentications
 
     include Models::ProviderValidation
 
@@ -48,6 +48,7 @@ module Rockauth
     def handle_missing_resource_owner_on_valid_assertion
       self.resource_owner = resource_owner_class.new
       resource_owner.assign_attributes_from_provider_user(provider_user_information)
+      resource_owner.provider_authentications << self
     end
   end
 end

@@ -6,6 +6,32 @@ module Rockauth
     end
     routes { Engine.routes }
 
+    describe 'GET index' do
+      it 'requires authentication' do
+        get :index
+        expect(response).not_to be_success
+        expect(response.status).to eq 401
+      end
+      context "when authenticated" do
+        let(:authentication) { create(:authentication) }
+        before :each do
+          @request.env['HTTP_AUTHORIZATION'] = "bearer #{authentication.token}"
+        end
+
+        it "returns all authorizations for the current user" do
+          other_auths = create_list(:authentication, 3, resource_owner: authentication.resource_owner)
+          get :index
+          expect(assigns(:authentications)).to match_array (other_auths + [authentication])
+        end
+
+        it "does not return other users authentications" do
+          other_auth = create(:authentication)
+          get :index
+          expect(assigns(:authentications)).not_to include other_auth
+        end
+      end
+    end
+
     describe 'POST authenticate' do
       let(:authentication_parameters) do
         {}
@@ -50,6 +76,33 @@ module Rockauth
           end.to change { Rockauth::Authentication.count }.by 1
           expect(response).to be_success
           expect(assigns(:auth_response).resource_owner).to eq user
+        end
+
+        context "detailed client information is provided" do
+          let(:authentication_parameters) do
+            {
+              authentication: {
+                auth_type: 'password',
+                client_id: client.id,
+                client_secret: client.secret,
+                username: user.email,
+                password: user.password,
+                client_version: '1.2.2',
+                device_identifier: 'foo_device',
+                device_os: 'iOS - super touchy sexy edition',
+                device_os_version: '30.0.1.2-patch231',
+                device_description: 'Rocketmade Spare iPhablet'
+              }
+            }
+          end
+
+          it "records detailed information to the authentication" do
+            post :authenticate, authentication_parameters
+            auth = assigns(:auth_response).authentication
+            %i(client_version device_identifier device_os device_os_version device_description).each do |key|
+              expect(auth.public_send(key)).to eq authentication_parameters[:authentication][key]
+            end
+          end
         end
 
         it 'includes the authentication token in the response' do
@@ -161,6 +214,49 @@ module Rockauth
                 expect(response).not_to be_success
               end
             end
+          end
+        end
+
+      end
+    end
+
+    describe "DELETE destroy" do
+      it 'requires authentication' do
+        delete :destroy
+        expect(response).not_to be_success
+        expect(response.status).to eq 401
+      end
+
+      context "when authenticated" do
+        let(:authentication) { create(:authentication) }
+        before :each do
+          @request.env['HTTP_AUTHORIZATION'] = "bearer #{authentication.token}"
+        end
+
+        context "with no id" do
+          it "deletes the current authentication" do
+            expect {
+              delete :destroy
+            }.to change { Authentication.where(id: authentication.id).count }.from(1).to(0)
+          end
+        end
+
+        context "with an id" do
+          it "deletes the given authentication" do
+            auth = create(:authentication, resource_owner: authentication.resource_owner)
+            expect {
+              delete :destroy, id: auth.id
+            }.to change { Authentication.where(id: auth.id).count }.from(1).to(0)
+          end
+        end
+
+        context "with another resource owners authentication id" do
+          it "gives not found" do
+            auth = create(:authentication)
+            expect {
+              delete :destroy, id: auth.id
+            }.to raise_error ActiveRecord::RecordNotFound
+            expect(Authentication.where(id: auth.id).count).to eq 1
           end
         end
 

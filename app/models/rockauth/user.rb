@@ -17,11 +17,11 @@ module Rockauth
     scope :with_username, -> (username) { where("#{self.table_name}.email ILIKE ?", username) }
 
     def email_required?
-      false
+      new_record? && provider_authentications.empty?
     end
 
     def password_required?
-      false
+      new_record? && provider_authentications.empty?
     end
   end
 end

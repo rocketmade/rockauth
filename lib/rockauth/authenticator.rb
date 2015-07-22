@@ -45,7 +45,7 @@ module Rockauth
     end
 
     def authentication_permitted_params
-      [*%i(auth_type client_id client_secret username password), provider_authentication: %i(provider provider_access_token provider_access_token_secret)]
+      [*%i(auth_type client_id client_secret username password client_version device_identifier device_description device_os device_os_version), provider_authentication: %i(provider provider_access_token provider_access_token_secret)]
     end
   end
 end
