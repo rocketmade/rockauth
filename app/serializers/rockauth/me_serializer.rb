@@ -1,18 +1,17 @@
 module Rockauth
   class MeSerializer < BaseSerializer
+    self.root = :user
     attributes :id, :email
 
     has_one :authentication
     has_many :provider_authentications
 
-    delegate :include_authentication?, to: :scope, allow_blank: true
-
-    def json_key
-      :user
+    def authentication
+      object.authentications.first
     end
 
-    def authentication
-      object.authentications[0]
+    def include_authentication?
+      scope.try(:include_authentication?)
     end
   end
 end

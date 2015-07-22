@@ -3,6 +3,7 @@ require 'active_model_serializers'
 
 module Rockauth
   class AuthenticationsController < ActionController::API
+    include ActionController::Helpers
     include ActionController::Serialization
 
     serialization_scope :view_context

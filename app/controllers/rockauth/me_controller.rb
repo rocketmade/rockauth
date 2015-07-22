@@ -3,42 +3,50 @@ require 'active_model_serializers'
 
 module Rockauth
   class MeController < ActionController::API
+    include ActionController::Helpers
     include ActionController::Serialization
 
     before_filter :authenticate_resource_owner!, except: [:create]
 
-    helper_method :include_registration?
+    helper_method :include_authentication?
 
     serialization_scope :view_context
 
     def create
       build_resource
-
-      if resource.save
-        render json: resource, serializer: MeSerializer
-      else
-        render json: Errors::ControllerError.new(400, 'User could not be created', resource.errors), serializer: ErrorSerializer, status: 400
-      end
+      render_resource_or_error resource.save
     end
 
     def show
-      render json: resource, serializer: MeSerializer
+      render_resource
     end
 
     def update
       resource.assign_attributes permitted_params.fetch(:user, {})
-      if resource.save
-        render json: resource, serializer: MeSerializer
-      else
-        render json: Errors::ControllerError.new(400, 'User could not be updated', resource.errors), serializer: ErrorSerializer, status: 400
-      end
+      render_resource_or_error resource.save
     end
 
     def destroy
       if resource.destroy
         render nothing: true, status: 200
       else
-        render json: Errors::ControllerError.new(400, 'User could not be deleted', resource.errors), serializer: ErrorSerializer, status: 400
+        render_action_error 409
+      end
+    end
+
+    def render_resource
+      render json: resource, serializer: MeSerializer, status: 200
+    end
+
+    def render_action_error error_status=400
+      render_error error_status, I18n.t("rockauth.errors.#{action_name}_error", resource: resource.class.model_name.human), resource.errors
+    end
+
+    def render_resource_or_error successful, error_status: 400
+      if successful
+        render_resource
+      else
+        render_action_error error_status
       end
     end
 
@@ -67,7 +75,7 @@ module Rockauth
       end
     end
 
-    def include_registration?
+    def include_authentication?
       action_name == 'create'
     end
   end

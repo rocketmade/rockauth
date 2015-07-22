@@ -146,6 +146,15 @@ module Rockauth
           end.to change { User.count }.by(-1)
           expect(response).to be_success
         end
+
+        context "when the user fails to destroy" do
+          it 'returns appropriate errors' do
+            allow_any_instance_of(User).to receive(:destroy).and_return false
+            delete :destroy
+            expect(response).not_to be_success
+            expect(response.status).to eq 409
+          end
+        end
       end
     end
   end

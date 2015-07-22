@@ -7,3 +7,6 @@ en:
       unauthorized: "You must be logged in to continue."
       authentication_failed: "Authentication failure."
       server_error: "Something went wrong."
+      create_error: "%{resource} could not be created."
+      update_error: "%{resource} could not be updated."
+      destroy_error: "%{resource} could not be destroyed."
