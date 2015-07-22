@@ -14,7 +14,7 @@ module Rockauth
     config.clients = []
     config.resource_owner_class = 'Rockauth::User'
     config.warn_missing_social_auth_gems = true
-    config.twitter = Struct.new(:consumer_key, :consumer_secret)
+    config.twitter = Struct.new(:consumer_key, :consumer_secret).new
   end
 
   def self.configure
