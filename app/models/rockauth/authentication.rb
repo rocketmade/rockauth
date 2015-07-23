@@ -72,10 +72,16 @@ module Rockauth
     end
 
     def self.for_token token
-      payload = JWT.decode(token, Configuration.jwt.secret).first
-      authentication = where(hashed_token_id: hash_token_id(payload['jti'])).first
-
-      authentication if authentication.valid_payload?(payload)
+      begin
+        payload = JWT.decode(token, Configuration.jwt.secret).first
+        authentication = where(hashed_token_id: hash_token_id(payload['jti'])).first
+        authentication if authentication.present? && authentication.valid_payload?(payload)
+      rescue JWT::VerificationError => e
+        Rails.logger.error "[Rockauth] Possible Forgery Attempt: #{e}"
+        nil
+      rescue JWT::DecodeError
+        nil
+      end
     end
 
     def password?
@@ -102,7 +108,6 @@ module Rockauth
       self.hashed_token_id ||= self.class.hash_token_id token_id
     end
 
-    # TODO: Remove salt and BCrypt this?
     def self.hash_token_id jti
       Digest::SHA2.hexdigest jti
     end
