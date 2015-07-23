@@ -11,6 +11,10 @@ describe "me routes" do
     expect(PATCH: "/me").to route_to(controller: "rockauth/me", action: "update")
   end
 
+  it "routes DELETE /me to destroy" do
+    expect(DELETE: "/me").to route_to(controller: "rockauth/me", action: "destroy")
+  end
+
   it "routes GET /me to show" do
     expect(GET: "/me").to route_to(controller: "rockauth/me", action: "show")
   end
