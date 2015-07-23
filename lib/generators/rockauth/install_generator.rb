@@ -28,7 +28,7 @@ module Rockauth
     def install_route
       route <<ROUTE
 namespace :api do
-    mount Rockauth::Engine => "/"'
+    mount Rockauth::Engine => '/'
   end
 ROUTE
     end
