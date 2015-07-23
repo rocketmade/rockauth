@@ -15,6 +15,7 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'factory_girl_rails'
 require 'webmock'
+require 'timecop'
 
 Dir[File.join(File.dirname(__FILE__), "support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.maintain_test_schema!

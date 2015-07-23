@@ -35,4 +35,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'google_plus'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'active_model_serializers', '~> 0.8.3'
+  s.add_development_dependency 'timecop'
 end

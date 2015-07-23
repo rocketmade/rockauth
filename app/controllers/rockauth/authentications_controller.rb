@@ -16,7 +16,7 @@ module Rockauth
     end
 
     def authenticate
-      @auth_response = Authenticator.from_request(request, self)
+      @auth_response = Authenticator.authentication_request(request, self)
       render @auth_response.render
     end
 

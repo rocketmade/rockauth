@@ -11,7 +11,7 @@ module Rockauth
       Rockauth::User
     end
 
-    def self.authentication_from_request request, controller
+    def self.verified_authentication_for_request request, controller
       bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
       if bearer.to_s.downcase == "bearer" && token.present?
         Authentication.for_token(token)
@@ -20,7 +20,7 @@ module Rockauth
       end
     end
 
-    def self.from_request request, controller
+    def self.authentication_request request, controller
       instance = new request, controller
 
       resource_owner_class = controller.try(:resource_owner_class) || default_resource_owner_class

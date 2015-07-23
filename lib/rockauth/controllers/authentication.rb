@@ -23,7 +23,7 @@ module Rockauth
         @current_authentication
       else
         @_authentication_checked = true
-        @current_authentication = Authenticator.authentication_from_request request, self
+        @current_authentication = Authenticator.verified_authentication_for_request request, self
       end
     end
 

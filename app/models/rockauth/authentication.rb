@@ -16,16 +16,13 @@ module Rockauth
     end
 
     validates_presence_of  :auth_type
-    validates_inclusion_of :auth_type, in: %w(password assertion registration)
+    validates_inclusion_of :auth_type,     in: %w(password assertion registration)
     validates_presence_of  :client_id
     validates_presence_of  :client_secret, on: :create
     validates_presence_of  :resource_owner
     validates_presence_of  :expiration
     validates_presence_of  :issued_at
     validates_presence_of  :auth_type
-    validates_inclusion_of :auth_type,     in: %w(password assertion registration)
-    validates_presence_of  :client_id
-    validates_presence_of  :client_secret, on: :create
 
     before_validation on: :create do
       self.expiration ||= Time.now.to_i + time_to_live

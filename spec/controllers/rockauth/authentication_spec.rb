@@ -18,7 +18,7 @@ module Rockauth
 
     context "logged out" do
       it "caches authentication failuer" do
-        expect(Authenticator).to receive(:authentication_from_request).once
+        expect(Authenticator).to receive(:verified_authentication_for_request).once
         routes.draw { get "show", to: "anonymous#show" }
         get :show
       end

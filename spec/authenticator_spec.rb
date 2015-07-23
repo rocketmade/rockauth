@@ -7,7 +7,7 @@ module Rockauth
     controller Rockauth::AuthenticationsController do
     end
 
-    describe ".from_request" do
+    describe ".verified_authentication_for_request" do
       before :each do
         controller.params.merge! authentication_parameters
       end
@@ -16,7 +16,7 @@ module Rockauth
         {}
       end
 
-      let(:auth_response) { described_class.from_request(request, controller) }
+      let(:auth_response) { described_class.authentication_request(request, controller) }
 
       it "returns a reponse" do
         expect(auth_response).to be_a Authenticator::Response
