@@ -1,14 +1,15 @@
 require 'rails'
 require 'active_support'
 module Rockauth
-  autoload :Authenticator,             'rockauth/authenticator'
-  autoload :Client,                    'rockauth/client'
-  autoload :Configuration,             'rockauth/configuration'
-  autoload :Controllers,               'rockauth/controllers'
-  autoload :Engine,                    'rockauth/engine'
-  autoload :Errors,                    'rockauth/errors'
-  autoload :ProviderUserInformation,   'rockauth/provider_user_information'
-  autoload :Models,                    'rockauth/models'
+  extend ActiveSupport::Autoload
+  autoload :Authenticator
+  autoload :Client
+  autoload :Configuration
+  autoload :Controllers
+  autoload :Engine
+  autoload :Errors
+  autoload :Models
+  autoload :ProviderUserInformation
 end
 require 'rockauth/configuration'
 require 'rockauth/engine'
