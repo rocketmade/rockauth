@@ -18,7 +18,7 @@ module Rockauth
 
     config.jwt = Struct.new(*%i(secret issuer signing_method)).new.tap do |jwt_config|
       jwt_config.secret = ''
-      jwt_config.issuer = nil
+      jwt_config.issuer = ''
       jwt_config.signing_method = 'HS256'
     end
   end

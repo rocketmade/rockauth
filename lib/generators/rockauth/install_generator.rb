@@ -6,7 +6,7 @@ module Rockauth
     desc 'Installs Rockauth'
 
     def copy_initializer
-      copy_file 'rockauth_full_initializer.rb', 'config/initializers/rockauth.rb'
+      template 'rockauth_full_initializer.rb', 'config/initializers/rockauth.rb'
     end
 
     def copy_locales
@@ -28,8 +28,8 @@ module Rockauth
     def install_route
       route <<ROUTE
 namespace :api do
-  mount Rockauth::Engine => "/"'
-end
+    mount Rockauth::Engine => "/"'
+  end
 ROUTE
     end
 

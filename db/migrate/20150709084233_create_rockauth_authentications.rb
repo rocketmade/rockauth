@@ -17,7 +17,7 @@ class CreateRockauthAuthentications < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :provider_authentications, [:resource_owner_id, :resource_owner_type], name: 'index_authentications_on_resource_owner'
-    add_index :provider_authentications, :hashed_token_id
+    add_index :authentications, [:resource_owner_id, :resource_owner_type], name: 'index_authentications_on_resource_owner'
+    add_index :authentications, :hashed_token_id
   end
 end

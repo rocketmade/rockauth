@@ -126,6 +126,7 @@ module Rockauth
 
     def jwt_payload
       {
+        iss: Configuration.jwt.issuer,
         iat: issued_at,
         exp: expiration,
         aud: client_id,

@@ -3,7 +3,12 @@ Rockauth.configure do |config|
   # config.email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/
   # config.token_time_to_live = 365 * 24 * 60 * 60
   # config.clients = []
+  # config.resource_owner_class = 'Rockauth::User'
   # config.warn_missing_social_auth_gems = true
+  # config.jwt.issuer = ''
+  # config.jwt.signing_method = 'HS256'
+
+  config.jwt.secret              = "<%= SecureRandom.base64(32) %>"
   config.resource_owner_class    = '::User'
   config.twitter.consumer_key    = ENV['TWITTER_CONSUMER_KEY']
   config.twitter.consumer_secret = ENV['TWITTER_CONSUMER_SECRET']
