@@ -36,6 +36,33 @@ Configuration can be found in `config/initializers/rockauth.rb`
 
 ### API Controllers
 
+If your controllers inherit from `ActionController::API` you can simply start using the helpers. If they don't, you will need to `include Rockauth::Controllers::Authentication` inside your base controller.
+
+Once you have the module included, you can use the following helpers:
+
+ - `authenticate_resource_owner!` is meant to be a before_filter which requires authentication.
+ - `current_resource_owner` gives the currently logged in user, nil if none
+ - `current_authentication` gives the current authentication
+
+The `render_error` and `render_unauthorized` helpers are also included and used to render the error response, thus providing a point of customization for errors.
+
+#### Example
+
+```ruby
+class SimpleController < ActionController::API
+  before_filter :authenticate_resource_owner!, except: [:insecure]
+
+  def insecure
+    render text: "This was insecurely rendered. logged in resource owner: #{current_resource_owner.id}"
+  end
+
+  def authenticated
+    render text: "This was authenticated. logged in resource owner: #{current_resource_owner.id}"
+  end
+end
+```
+
+
 ### API Usage
 
 #### Authentication Endpoint

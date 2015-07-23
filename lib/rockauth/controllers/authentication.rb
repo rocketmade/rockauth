@@ -19,7 +19,17 @@ module Rockauth
     end
 
     def current_authentication
-      @current_authentication ||= Authenticator.authentication_from_request request, self
+      if @_authentication_checked
+        @current_authentication
+      else
+        @_authentication_checked = true
+        @current_authentication = Authenticator.authentication_from_request request, self
+      end
+    end
+
+    included do
+      helper_method :current_resource_owner
+      helper_method :current_authentication
     end
   end
 end

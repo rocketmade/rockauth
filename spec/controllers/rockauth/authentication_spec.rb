@@ -3,11 +3,27 @@ require 'spec_helper'
 module Rockauth
   describe Controllers::Authentication do
     controller(ActionController::API) do
-      before_filter :authenticate_resource_owner!
+      before_filter :authenticate_resource_owner!, except: [:show]
+
       def index
         render text: current_resource_owner.to_s
       end
+
+      def show
+        current_resource_owner.try(:foo)
+        current_resource_owner.try(:bar)
+        render json: { resource_owner_id: current_resource_owner.try(:id) }
+      end
     end
+
+    context "logged out" do
+      it "caches authentication failuer" do
+        expect(Authenticator).to receive(:authentication_from_request).once
+        routes.draw { get "show", to: "anonymous#show" }
+        get :show
+      end
+    end
+
     context "a valid authentication", authenticated_request: true do
       it "completes appropriately" do
         get :index
