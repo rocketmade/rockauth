@@ -10,9 +10,8 @@ module Rockauth
 
     scope :expired, -> { where('expiration <= ?', Time.now.to_i) }
     scope :unexpired, -> { where('expiration > ?', Time.now.to_i) }
-    scope :for_token, -> (token) { where(hashed_token_id: hash_token_id(token)) }
 
-    %i(resource_owner_class password username time_to_live token_id jwt client_secret).each do |key|
+    %i(resource_owner_class password username time_to_live token_id token client_secret).each do |key|
       attr_accessor key
     end
 
@@ -67,9 +66,16 @@ module Rockauth
 
     before_create do
       generate_token_id
-      generate_jwt
+      generate_token
       hash_token_id
       true
+    end
+
+    def self.for_token token
+      payload = JWT.decode(token, Configuration.jwt.secret).first
+      authentication = where(hashed_token_id: hash_token_id(payload['jti'])).first
+
+      authentication if authentication.valid_payload?(payload)
     end
 
     def password?
@@ -105,14 +111,12 @@ module Rockauth
       Time.at(expiration) > Time.now
     end
 
-    def verify! payload
-      self if active? &&
-              payload['iat'] == issued_at &&
-              payload['exp'] == expiration
+    def valid_payload? payload
+      active? && payload['iat'] == issued_at && payload['exp'] == expiration
     end
 
-    def generate_jwt
-      self.jwt ||= JWT.encode jwt_payload, Configuration.jwt.secret, Configuration.jwt.signing_method
+    def generate_token
+      self.token ||= JWT.encode jwt_payload, Configuration.jwt.secret, Configuration.jwt.signing_method
     end
 
     def jwt_payload

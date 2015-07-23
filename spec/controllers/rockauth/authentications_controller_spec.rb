@@ -12,11 +12,8 @@ module Rockauth
         expect(response).not_to be_success
         expect(response.status).to eq 401
       end
-      context "when authenticated" do
-        let(:authentication) { create(:authentication) }
-        before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
-        end
+      context "when authenticated", authenticated_request: true do
+        let(:authentication) { given_auth }
 
         it "returns all authorizations for the current user" do
           other_auths = create_list(:authentication, 3, resource_owner: authentication.resource_owner)
@@ -110,9 +107,9 @@ module Rockauth
           expect(parsed_response['authentication']).to have_key 'token_id'
         end
 
-        it 'includes the authentication jwt in the response' do
+        it 'includes the authentication token in the response' do
           post :authenticate, authentication_parameters
-          expect(parsed_response['authentication']).to have_key 'jwt'
+          expect(parsed_response['authentication']).to have_key 'token'
         end
 
         it 'includes the authentication token_id in the response' do
@@ -232,11 +229,8 @@ module Rockauth
         expect(response.status).to eq 401
       end
 
-      context "when authenticated" do
-        let(:authentication) { create(:authentication) }
-        before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
-        end
+      context "when authenticated", authenticated_request: true do
+        let(:authentication) { given_auth }
 
         context "with no id" do
           it "deletes the current authentication" do

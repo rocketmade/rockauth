@@ -14,8 +14,7 @@ module Rockauth
     def self.authentication_from_request request, controller
       bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
       if bearer.to_s.downcase == "bearer" && token.present?
-        payload = JWT.decode(token, Configuration.jwt.secret).first
-        Authentication.for_token(payload['jti']).first.verify! payload
+        Authentication.for_token(token)
       else
         nil
       end

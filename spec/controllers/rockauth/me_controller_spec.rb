@@ -99,9 +99,6 @@ module Rockauth
     end
 
     describe 'PATCH update' do
-      let(:user) { create(:user) }
-      let(:authentication) { create(:authentication, resource_owner: user) }
-
       let(:parameters) do
         { user: { password: 'adifferentpassword123' } }
       end
@@ -114,31 +111,19 @@ module Rockauth
           error_body = JSON.parse(response.body)
           expect(error_body['error']['message']).to eq I18n.t('rockauth.errors.unauthorized')
         end
-
-        it 'does not update the user' do
-          expect do
-            post :update
-          end.not_to change { user.reload.password_digest }
-        end
       end
 
-      context 'when authenticated' do
-        before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
-        end
+      context 'when authenticated', authenticated_request: true do
         it 'updates the user' do
           expect do
             patch :update, parameters
-          end.to change { user.reload.password_digest }
+          end.to change { given_auth.resource_owner.reload.password_digest }
           expect(response).to be_success
         end
       end
     end
 
     describe 'GET show' do
-      let(:user) { create(:user) }
-      let(:authentication) { create(:authentication, resource_owner: user) }
-
       let(:parameters) do
         { user: { password: Faker::Internet.password } }
       end
@@ -153,14 +138,11 @@ module Rockauth
         end
       end
 
-      context 'when authenticated' do
-        before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
-        end
+      context 'when authenticated', authenticated_request: true do
         it 'shows the user' do
           get :show
           expect(response).to be_success
-          expect(assigns(:user)).to eq user
+          expect(assigns(:user)).to eq given_auth.resource_owner
         end
       end
     end
@@ -189,10 +171,7 @@ module Rockauth
         end
       end
 
-      context 'when authenticated' do
-        before :each do
-          @request.env['HTTP_AUTHORIZATION'] = "Bearer #{authentication.jwt}"
-        end
+      context 'when authenticated', authenticated_request: true do
         it 'destroys the user' do
           expect do
             delete :destroy
