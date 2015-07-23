@@ -46,6 +46,28 @@ module Rockauth
       end
     end
 
+    context "a differently forged token", authenticated_request: true do
+      let(:iat) { Time.now.to_i }
+      let(:exp) { (Time.now + 1.year).to_i }
+
+      let(:token) do
+        t = JWT.encode({ exp: exp, iat: iat, sub_id: create(:user).id, jti: 'notveritas' }, '').split('.')
+        t[1] = Base64.encode64({ exp: exp, iat: iat, sub_id: create(:user).id, jti: 'veritas' }.to_json)
+        t.join('.')
+      end
+      let(:other_auth) do
+        create(:authentication, expiration: exp, issued_at: iat, token_id: 'veritas')
+      end
+      let(:given_auth) do
+        create(:authentication, token_id: 'notveritas', token: token)
+      end
+      it "denies access" do
+        get :index
+        expect(response).not_to be_success
+        expect(response.status).to eq 401
+      end
+    end
+
     context "a token with the wrong secret", authenticated_request: true do
       let(:iat) { Time.now.to_i }
       let(:exp) { (Time.now + 1.year).to_i }
