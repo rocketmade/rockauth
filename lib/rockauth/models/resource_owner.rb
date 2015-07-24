@@ -14,6 +14,7 @@ module Rockauth
         accepts_nested_attributes_for :provider_authentications
 
         validates_associated :authentications, on: :create
+        # validates_presence_of :authentications, on: :create
       end
     end
   end

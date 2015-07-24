@@ -22,6 +22,12 @@ module Rockauth
         end.to change { User.count }.by 1
       end
 
+      it "requires authentication data" do
+        parameters[:user].delete(:authentication)
+        post :create, parameters
+        expect(response).not_to be_success
+      end
+
       it 'includes the authentication token_id in the response' do
         post :create, parameters
         expect(parsed_response[:user]).to have_key :authentication
