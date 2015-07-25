@@ -156,8 +156,6 @@ Response:
 GET /api/authorizations.json
 ```
 
-This endpoint deletes an authorization token, effectively logging the user out. If an ID is provided, that authentication will be deleted. If no id is provided, the current authentication token is deleted.
-
 ##### Delete Authorization (Log Out)
 
 ```
