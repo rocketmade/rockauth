@@ -3,9 +3,14 @@ require 'spec_helper'
 describe "Ruby Code" do
   spec_generated = false
   Dir["{app,lib}/**/*.rb"].each do |f|
-    if File.read(f).match /\#\s*TODO/i
+    file_content = File.read(f)
+    if file_content.match /\#\s*TODO/i
       spec_generated = true
-      pending "#{f} has todos"
+      file_content.split("\n").each do |line|
+        if line.match /\#\s*TODO/i
+          pending "TODO in #{f}: #{line.gsub(/^.*\#\s*TODO/i,'')}"
+        end
+      end
     end
   end
   unless spec_generated

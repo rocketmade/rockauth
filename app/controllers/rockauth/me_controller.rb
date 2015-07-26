@@ -14,6 +14,11 @@ module Rockauth
 
     def create
       build_resource
+
+      # Makes the UserSerializer work properly and display all probative data.
+      @current_resource_owner = resource
+      @current_authentication = resource.try(:authentication)
+
       render_resource_or_error resource.save
     end
 
@@ -35,7 +40,7 @@ module Rockauth
     end
 
     def render_resource
-      render json: resource, serializer: MeSerializer, status: 200
+      render json: resource, status: 200
     end
 
     def render_action_error error_status=400

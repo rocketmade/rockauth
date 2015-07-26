@@ -31,6 +31,7 @@ module Rockauth
       it 'includes the authentication token_id in the response' do
         post :create, parameters
         expect(parsed_response[:user]).to have_key :authentication
+        expect(parsed_response[:user]).to have_key :email
         expect(parsed_response[:user][:authentication]).to have_key :token_id
       end
 

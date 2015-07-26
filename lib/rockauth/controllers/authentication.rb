@@ -26,8 +26,8 @@ module Rockauth
         @current_authentication = Authenticator.verified_authentication_for_request request, self
       end
     end
-
     included do
+      include ActionController::Helpers # TODO: we dont want to force apis to have helpers if we can avoid it.....
       helper_method :current_resource_owner
       helper_method :current_authentication
     end
