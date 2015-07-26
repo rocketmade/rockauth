@@ -5,8 +5,8 @@ module Rockauth
 
     included do
       validates_inclusion_of :provider, in: ->(instance) { instance.class.valid_networks }
-
-      before_validation :configure_from_provider
+      attr_accessor :skip_provider_authentication
+      before_validation :configure_from_provider, unless: :skip_provider_authentication
 
       def configure_from_provider
         if provider.present? && self.class.valid_networks.include?(provider)

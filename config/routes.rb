@@ -5,4 +5,5 @@ Rockauth::Engine.routes.draw do
   delete 'authentications/:id', controller: 'rockauth/authentications', action: 'destroy'
 
   resource :me, only: [:show, :create, :update, :destroy], controller: 'rockauth/me'
+  resources :provider_authentications, controller: 'rockauth/provider_authentications'
 end

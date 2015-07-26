@@ -53,7 +53,7 @@ class SimpleController < ActionController::API
   before_filter :authenticate_resource_owner!, except: [:insecure]
 
   def insecure
-    render text: "This was insecurely rendered. logged in resource owner: #{current_resource_owner.id}"
+    render text: "This was insecurely rendered. logged in resource owner: #{current_resource_owner.try(:id)}"
   end
 
   def authenticated
@@ -258,6 +258,79 @@ DELETE /api/me.json
 ```
 
 This endpoint is meant to be used to delete the account and all associated data. If the user cannot be destroyed, expect an `HTTP 409` with error JSON as described above
+
+
+
+##### Create Provider Authentication (Link to a social network)
+
+```
+POST /api/provider_authentications.json
+```
+
+This endpoint is meant to be used for associating new social networks to an existing account.
+
+Request JSON:
+
+```ruby
+{
+  "provider_authentication": {
+    "provider":                     <string>, # facebook|google_plus|twitter|instagram - Required
+    "provider_access_token":        <string>, #                                        - Required
+    "provider_access_token_secret": <string>, #                                        - Required depending on the social network (Twitter)
+  }
+}
+```
+
+Successful Response (HTTP Status 200):
+
+```ruby
+{
+  "provider_authentication": {
+    id:               <integer>,
+    provider:         <string>,
+    provider_user_id: <string>
+  }
+}
+```
+
+Example Error Response (HTTP Status 400):
+
+```ruby
+{
+  "error": {
+    "status_code": 400,
+    "message": "Provider Authentication could not be created.",
+    "validation_errors": {
+      "provider":              ["can't be blank", "is not included in the list"],
+      "provider_access_token": ["can't be blank", "is invalid"],
+      "provider_user_id":      ["can't be blank", "has already been taken"]
+    }
+  }
+}
+```
+
+##### Get an Authentication
+
+```
+GET /api/provider_authentications/:id.json
+```
+
+##### Update an authentication
+
+```
+PUT|PATCH /api/provider_authentications/:id.json
+```
+
+This endpoint is meant to be used to update the provider access token or secret, no other data on the provider authentication can be updated.
+
+
+##### Delete an Authentication (Unlink from a social network)
+
+```
+DELETE /api/provider_authentications/:id.json
+```
+
+This endpoint is meant to delete a provider authentication, therefore unlinking the given social network account.
 
 
 ## Supported Versions
