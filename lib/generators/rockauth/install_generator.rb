@@ -25,6 +25,17 @@ module Rockauth
       invoke 'rockauth:migrations'
     end
 
+    def generate_serializers
+      puts File.expand_path('../../../app/serializers/rockauth/*.rb', File.dirname(__FILE__))
+      Dir[File.expand_path('../../../app/serializers/rockauth/*.rb', File.dirname(__FILE__))].each do |f|
+        basename = File.basename(f)
+        copy_file f, "app/serializers/#{basename}"
+        gsub_file "app/serializers/#{basename}", 'module Rockauth', ''
+        gsub_file "app/serializers/#{basename}", /^end$/, ''
+        gsub_file "app/serializers/#{basename}", /^\s\s/, ''
+      end
+    end
+
     def install_route
       route <<ROUTE
 namespace :api do

@@ -16,6 +16,10 @@ module Rockauth
 
     scope :with_username, -> (username) { where("#{self.table_name}.email ILIKE ?", username) }
 
+    def self.active_model_serializer
+      Rockauth::Configuration.serializers.user.safe_constantize
+    end
+
     def email_required?
       new_record? && provider_authentications.empty?
     end

@@ -68,6 +68,10 @@ module Rockauth
       true
     end
 
+    def self.active_model_serializer
+      Rockauth::Configuration.serializers.authentication.safe_constantize
+    end
+
     def self.for_token token
       begin
         payload = JWT.decode(token, Configuration.jwt.secret).first

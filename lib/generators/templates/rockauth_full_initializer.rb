@@ -13,6 +13,11 @@ Rockauth.configure do |config|
   config.twitter.consumer_key    = ENV['TWITTER_CONSUMER_KEY']
   config.twitter.consumer_secret = ENV['TWITTER_CONSUMER_SECRET']
 
+  config.serializers.user                    = "::UserSerializer"
+  config.serializers.authentication          = "::AuthenticationSerializer"
+  config.serializers.provider_authentication = "::ProviderAuthenticationSerializer"
+  config.serializers.error                   = "::ErrorSerializer"
+
   begin
     Array(YAML.load_file(Rails.root.join('config/rockauth_clients.yml'))[Rails.env]).each do |client_config|
       config.clients << Rockauth::Client.new(*(%w(id secret title).map { |k| client_config["client_#{k}"] }))

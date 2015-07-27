@@ -1,5 +1,5 @@
 module Rockauth
-  Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients resource_owner_class warn_missing_social_auth_gems twitter jwt)) do
+  Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients resource_owner_class warn_missing_social_auth_gems twitter jwt serializers)) do
     def resource_owner_class= arg
       @constantized_resource_owner_class = nil
       @resource_owner_class = arg
@@ -20,6 +20,13 @@ module Rockauth
       jwt_config.secret = ''
       jwt_config.issuer = ''
       jwt_config.signing_method = 'HS256'
+    end
+
+    config.serializers = Struct.new(*%i(error user authentication provider_authentication)).new.tap do |serializers|
+      serializers.error                   = "Rockauth::ErrorSerializer"
+      serializers.user                    = "Rockauth::UserSerializer"
+      serializers.authentication          = "Rockauth::AuthenticationSerializer"
+      serializers.provider_authentication = "Rockauth::ProviderAuthenticationSerializer"
     end
   end
 

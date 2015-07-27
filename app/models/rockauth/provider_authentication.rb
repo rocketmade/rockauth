@@ -19,6 +19,10 @@ module Rockauth
 
     delegate :resource_owner_class, to: :authentication
 
+    def self.active_model_serializer
+      Rockauth::Configuration.serializers.provider_authentication.safe_constantize
+    end
+
     def validate_attributes_unchangable
       %i(resource_owner_id resource_owner_type provider provider_user_id).each do |key|
         errors.add key, :rockauth_cannot_be_changed if !new_record? && public_send(:"#{key}_changed?")
