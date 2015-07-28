@@ -38,6 +38,10 @@ module Rockauth
 
 
     module ClassMethods
+      def inherited subclass
+        subclass.instance_variable_set :@network_validator_configuration, @network_validator_configuration.dup
+      end
+
       def provider_network provider, &block
         fail ArgumentError, "no block given" unless block_given?
         @network_validator_configuration ||= {}
