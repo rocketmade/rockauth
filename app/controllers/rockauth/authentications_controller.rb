@@ -11,7 +11,7 @@ module Rockauth
     before_filter :authenticate_resource_owner!, except: [:authenticate]
 
     def index
-      @authentications = Authentication.where(resource_owner: current_resource_owner)
+      @authentications = current_resource_owner.authentications
       render json: @authentications
     end
 
@@ -22,7 +22,7 @@ module Rockauth
 
     def destroy
       record = current_authentication
-      record = Authentication.where(resource_owner: current_resource_owner).find(params[:id]) if params[:id].present?
+      record = current_resource_owner.authentications.find(params[:id]) if params[:id].present?
       if record.destroy
         render nothing: true, status: 200
       else

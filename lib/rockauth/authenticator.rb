@@ -8,13 +8,13 @@ module Rockauth
     delegate :params, to: :controller
 
     def self.default_resource_owner_class
-      Rockauth::User
+      Rockauth::Configuration.resource_owner_class
     end
 
     def self.verified_authentication_for_request request, controller
       bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
       if bearer.to_s.downcase == "bearer" && token.present?
-        Authentication.for_token(token)
+        default_resource_owner_class.authentication_class.for_token(token)
       else
         nil
       end
@@ -40,7 +40,7 @@ module Rockauth
       if authentication_params.has_key? :provider_authentication
         authentication_params[:provider_authentication_attributes] = authentication_params.delete(:provider_authentication)
       end
-      response.authentication = Authentication.new((controller.try(:authentication_options) || {}).merge(authentication_params))
+      response.authentication = resource_owner_class.authentication_class.new((controller.try(:authentication_options) || {}).merge(authentication_params))
       response.apply
     end
 
