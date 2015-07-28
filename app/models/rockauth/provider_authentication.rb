@@ -35,7 +35,7 @@ module Rockauth
       configure_from_provider
 
       if provider_user_id.present? && provider.present?
-        result = ProviderAuthentication.where(provider: provider, provider_user_id: provider_user_id).first
+        result = self.class.where(provider: provider, provider_user_id: provider_user_id).first
         if result.present?
           result.provider_user_information = provider_user_information
           result.assign_attributes_from_provider
