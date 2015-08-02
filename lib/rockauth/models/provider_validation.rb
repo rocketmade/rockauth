@@ -40,7 +40,7 @@ module Rockauth
     module ClassMethods
       def inherited subclass
         super
-        subclass.instance_variable_set :@network_validator_configuration, @network_validator_configuration.dup
+        subclass.instance_variable_set :@network_validator_configuration, (@network_validator_configuration || {}).dup
       end
 
       def provider_network provider, &block
