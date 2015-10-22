@@ -25,7 +25,7 @@ As a best practice, you should use a different client for each client applicatio
 You can either alter `config/initializers/rockauth.rb` and load clients however you like, or populate them in `config/rockauth_clients.yml` by using the following command:
 
 ```console
-  rails generate rockauth:client --client_title "iOS Client" --environment production
+  rails generate rockauth:client "iOS Client" --environment production
 ```
 
 ## Configuration
