@@ -51,13 +51,10 @@ module Rockauth
     validates_presence_of :provider_authentication, if: :assertion?, on: :create
 
     validate on: :create do
-      if client_id.present?
-        client = Configuration.clients.find { |c| c.id == client_id }
-        if client.blank?
-          errors.add :client_id, :invalid
-        elsif client.secret != client_secret
-          errors.add :client_secret, :invalid
-        end
+      if client.blank?
+        errors.add :client_id, :invalid
+      elsif client.secret != client_secret
+        errors.add :client_secret, :invalid
       end
     end
 
@@ -83,6 +80,12 @@ module Rockauth
       rescue JWT::DecodeError
         nil
       end
+    end
+
+    def client
+      @client ||= if client_id.present?
+                    Configuration.clients.find { |c| c.id == client_id }
+                  end
     end
 
     def password?

@@ -36,4 +36,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'active_model_serializers', '~> 0.8.3'
   s.add_development_dependency 'timecop'
+  s.add_development_dependency 'activeadmin'
+  s.add_development_dependency 'pry-rails'
 end

@@ -5,5 +5,11 @@ module Rockauth
     initializer "rockauth.inject.controller_concern" do
       ActionController::API.send :include, Rockauth::Controllers::Authentication
     end
+
+    initializer "rockauth.load_active_admin_resources" do
+      if Rockauth::Configuration.generate_active_admin_resources || Rockauth::Configuration.generate_active_admin_resources.nil? && defined?(ActiveAdmin)
+        ActiveAdmin.application.load_paths += [File.expand_path(File.dirname(__FILE__) + '../../../app/admin')]
+      end
+    end
   end
 end
