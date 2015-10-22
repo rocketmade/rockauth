@@ -4,6 +4,7 @@ RSpec.describe Rockauth::User, type: :model do
   subject { build(:user) }
   it { is_expected.to have_many :provider_authentications }
   it { is_expected.to have_many :authentications }
+  it { is_expected.to validate_uniqueness_of :email }
 
   context "email is required" do
     before :each do
