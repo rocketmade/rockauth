@@ -18,14 +18,14 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', '>= 4.0.0'
   s.add_dependency 'rails-api', '>= 0.4.0'
-  s.add_dependency 'active_model_serializers', '>= 0.8'
+  s.add_dependency 'active_model_serializers'
   s.add_dependency 'bcrypt', '>= 3.1.10'
   s.add_dependency 'jwt'
 
   s.add_development_dependency 'pg'
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'database_cleaner'
-  s.add_development_dependency 'shoulda-matchers'
+  s.add_development_dependency 'shoulda-matchers', '~> 2.8.0'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'factory_girl_rails'
   s.add_development_dependency 'faker'
@@ -34,6 +34,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'instagram'
   s.add_development_dependency 'google_plus'
   s.add_development_dependency 'webmock'
-  # s.add_development_dependency 'active_model_serializers', '~> 0.8.3'
+  s.add_development_dependency 'active_model_serializers', '~> 0.8.3'
   s.add_development_dependency 'timecop'
 end
