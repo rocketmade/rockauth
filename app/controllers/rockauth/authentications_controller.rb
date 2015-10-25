@@ -17,6 +17,9 @@ module Rockauth
 
     def authenticate
       @auth_response = Authenticator.authentication_request(request, self)
+      if @auth_response.success
+        @current_resource_owner = @auth_response.resource_owner
+      end
       render @auth_response.render
     end
 
