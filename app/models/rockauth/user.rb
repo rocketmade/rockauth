@@ -21,6 +21,8 @@ module Rockauth
       Rockauth::Configuration.serializers.user.safe_constantize
     end
 
+    delegate :active_model_serializer, to: :class
+
     def email_required?
       new_record? && provider_authentications.empty?
     end
