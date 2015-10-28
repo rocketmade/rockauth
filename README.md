@@ -107,7 +107,7 @@ Successful Response (HTTP Status 200):
     "id":         <integer>,
     "token":      <string>, # JWT
     "expiration": <integer>,
-    "resource_owner": {
+    "user": {
       "id":    <integer>,
       "email": <string>
     },
@@ -147,7 +147,7 @@ curl localhost:3000/api/authentications.json -H "Content-Type: application/json"
 Response:
 
 ```
-{"authentication":{"id":1,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NjkwOTAyOTYsInN1YiI6MSwic3ViX3R5cGUiOiJSb2NrYXV0aDo6VXNlciJ9.gNvFfI-JapDgmSUhAcnui63fOEVz9EnsnzLxqjZW-WQ","expiration":1469090296,"client_version":null,"device_identifier":null,"device_os":null,"device_os_version":null,"device_description":null,"resource_owner":{"id":1,"email":"test@example.com","provider_authentications":[]},"provider_authentication":null}}
+{"authentication":{"id":1,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NjkwOTAyOTYsInN1YiI6MSwic3ViX3R5cGUiOiJSb2NrYXV0aDo6VXNlciJ9.gNvFfI-JapDgmSUhAcnui63fOEVz9EnsnzLxqjZW-WQ","expiration":1469090296,"client_version":null,"device_identifier":null,"device_os":null,"device_os_version":null,"device_description":null,"user":{"id":1,"email":"test@example.com","provider_authentications":[]},"provider_authentication":null}}
 ```
 
 ###### Index Authorizations (List all logged-in devices)

@@ -22,11 +22,11 @@ module Rockauth
     end
 
     def render_success
-      { json: authentication, serializer: AuthenticationSerializer, status: 200 }
+      { json: authentication, status: 200 }
     end
 
     def render_error
-      { json: error, serializer: ErrorSerializer, status: error.status_code }
+      { json: error, serializer: Rockauth::Configuration.serializers.error.safe_constantize, status: error.status_code }
     end
   end
 end

@@ -22,6 +22,7 @@ module Rockauth
     def self.active_model_serializer
       Rockauth::Configuration.serializers.provider_authentication.safe_constantize
     end
+    delegate :active_model_serializer, to: :class
 
     def validate_attributes_unchangable
       %i(resource_owner_id resource_owner_type provider provider_user_id).each do |key|

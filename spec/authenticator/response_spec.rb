@@ -53,7 +53,6 @@ module Rockauth
       end
     end
 
-
     describe '#render' do
       before(:each) do
         subject.apply
@@ -83,8 +82,8 @@ module Rockauth
           expect(subject.render[:status]).to eq 200
         end
 
-        it "selects the authorization serializer" do
-          expect(subject.render[:serializer]).to eq Rockauth::AuthenticationSerializer
+        it "leaves the authorization serializer up to the automatic and model level selection" do
+          expect(subject.render).not_to have_key :serializer
         end
 
         it "selects the error for the json" do

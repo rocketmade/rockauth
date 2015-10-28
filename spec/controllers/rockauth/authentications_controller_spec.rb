@@ -114,7 +114,7 @@ module Rockauth
 
         it 'includes the authentication token_id in the response' do
           post :authenticate, authentication_parameters
-          expect(parsed_response['authentication']).to have_key 'resource_owner'
+          expect(parsed_response['authentication']).to have_key 'user'
         end
 
         context "when missing authentication parameters" do
@@ -193,7 +193,7 @@ module Rockauth
                 post :authenticate, authentication_parameters
               }.to change { User.count }.by 1
               expect(response).to be_success
-              expect(parsed_response['authentication']['resource_owner']['id']).to eq User.last.id
+              expect(parsed_response['authentication']['user']['id']).to eq User.last.id
               expect(parsed_response['authentication']['provider_authentication']['provider']).to eq provider
             end
 
@@ -203,7 +203,7 @@ module Rockauth
                 post :authenticate, authentication_parameters
               }.not_to change { [User.count, ProviderAuthentication.count] }
               expect(response).to be_success
-              expect(parsed_response['authentication']['resource_owner']['id']).to eq user.id
+              expect(parsed_response['authentication']['user']['id']).to eq user.id
               expect(parsed_response['authentication']['provider_authentication']['id']).to eq provider_authentication.id
             end
 
