@@ -52,8 +52,8 @@ module Rockauth
 
       def twitter_client
         @twitter_client ||= ::Twitter::REST::Client.new do |config|
-          config.consumer_key        = Configuration.twitter[:consumer_key]
-          config.consumer_secret     = Configuration.twitter[:consumer_secret]
+          config.consumer_key        = Configuration.providers.twitter[:consumer_key]
+          config.consumer_secret     = Configuration.providers.twitter[:consumer_secret]
           config.access_token        = access_token
           config.access_token_secret = access_token_secret
         end

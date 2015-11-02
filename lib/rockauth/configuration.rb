@@ -1,6 +1,6 @@
 module Rockauth
   Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients
-                                 resource_owner_class warn_missing_social_auth_gems twitter jwt
+                                 resource_owner_class warn_missing_social_auth_gems providers jwt
                                  serializers generate_active_admin_resources active_admin_menu_name)) do
     def resource_owner_class= arg
       @constantized_resource_owner_class = nil
@@ -16,7 +16,6 @@ module Rockauth
     config.clients = []
     config.resource_owner_class = 'Rockauth::User'
     config.warn_missing_social_auth_gems = true
-    config.twitter = Struct.new(:consumer_key, :consumer_secret).new
 
     config.jwt = Struct.new(*%i(secret issuer signing_method)).new.tap do |jwt_config|
       jwt_config.secret = ''

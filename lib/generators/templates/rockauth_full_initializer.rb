@@ -8,15 +8,13 @@ Rockauth.configure do |config|
   # config.jwt.issuer = ''
   # config.jwt.signing_method = 'HS256'
 
-  config.jwt.secret              = "<%= SecureRandom.base64(32) %>"
+  config.jwt.secret              = '<%= SecureRandom.base64(32) %>'
   config.resource_owner_class    = '::User'
-  config.twitter.consumer_key    = ENV['TWITTER_CONSUMER_KEY']
-  config.twitter.consumer_secret = ENV['TWITTER_CONSUMER_SECRET']
 
-  config.serializers.user                    = "::UserSerializer"
-  config.serializers.authentication          = "::AuthenticationSerializer"
-  config.serializers.provider_authentication = "::ProviderAuthenticationSerializer"
-  config.serializers.error                   = "::ErrorSerializer"
+  config.serializers.user                    = '::UserSerializer'
+  config.serializers.authentication          = '::AuthenticationSerializer'
+  config.serializers.provider_authentication = '::ProviderAuthenticationSerializer'
+  config.serializers.error                   = '::ErrorSerializer'
 
   # config.generate_active_admin_resources = nil # nil decides based on whether active_admin is loaded
   # config.active_admin_menu_name = 'User Authentication'
@@ -29,11 +27,16 @@ Rockauth.configure do |config|
     warn 'Could not load Rockauth clients from config/rockauth_clients.yml'
   end
 
-end
+  begin
+    config.providers = OpenStruct.new(JSON.parse(File.read(Rails.root.join('config/rockauth_providers.json'))[Rails.env]))
+  rescue Errno::ENOENT
+    warn 'Could not load Rockauth providers from config/rockauth_providers.json'
+  end
 
-Instagram.configure do |config|
-  config.client_id     = ENV['INSTAGRAM_CLIENT_ID']
-  config.client_secret = ENV['INSTAGRM_CLIENT_SECRET']
-end
+  Instagram.configure do |instagram_config|
+    instagram_config.client_id     = config.providers.instagram[:client_id]
+    instagram_config.client_secret = config.providers.instagram[:client_secret]
+  end
 
-GooglePlus.api_key = ENV['GOOGLE_PLUS_API_KEY']
+  GooglePlus.api_key = config.providers.google_plus[:api_key]
+end
