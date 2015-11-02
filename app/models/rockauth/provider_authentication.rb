@@ -4,6 +4,7 @@ module Rockauth
   class ProviderAuthentication < ActiveRecord::Base
     self.table_name = 'provider_authentications'
     belongs_to :resource_owner, polymorphic: true, inverse_of: :provider_authentications
+    has_many :authentications, class_name: 'Rockauth::Authentication', dependent: :nullify
 
     include Models::ProviderValidation
 
