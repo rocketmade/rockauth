@@ -133,6 +133,7 @@ module Rockauth
       context "when authenticated", authenticated_request: true do
         let!(:provider_authentication) { create(:provider_authentication, resource_owner: given_auth.resource_owner) }
         it "delete the provider authentication" do
+          create(:authentication, resource_owner: given_auth.resource_owner, provider_authentication: provider_authentication)
           expect {
             delete :destroy, id: provider_authentication.id, provider_authentication: { provider_access_token: 'blarg' }
           }.to change { given_auth.resource_owner.provider_authentications.where(id: provider_authentication.id).count }.from(1).to(0)
