@@ -17,6 +17,12 @@ module Rockauth
     config.resource_owner_class = 'Rockauth::User'
     config.warn_missing_social_auth_gems = true
 
+    config.providers = Struct.new(*%i(twitter instagram google_plus)).new.tap do |providers|
+      %i(twitter instagram google_plus).each do |provider|
+        providers.public_send("#{provider}=", {})
+      end
+    end
+
     config.jwt = Struct.new(*%i(secret issuer signing_method)).new.tap do |jwt_config|
       jwt_config.secret = ''
       jwt_config.issuer = ''

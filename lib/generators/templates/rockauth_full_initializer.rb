@@ -28,7 +28,10 @@ Rockauth.configure do |config|
   end
 
   begin
-    config.providers = OpenStruct.new(JSON.parse(File.read(Rails.root.join('config/rockauth_providers.json'))[Rails.env]))
+    parsed_json = JSON.parse(File.read(Rails.root.join('config/rockauth_providers.json')))[Rails.env] || {}
+    parsed_json.with_indifferent_access.each do |provider, creds|
+      config.providers.public_send("#{provider}=", creds)
+    end
   rescue Errno::ENOENT
     warn 'Could not load Rockauth providers from config/rockauth_providers.json'
   end
