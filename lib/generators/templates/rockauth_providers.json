@@ -1,17 +1,4 @@
 {
-  "test": {
-    "twitter": {
-      "consumer_key": "",
-      "consumer_secret": ""
-    },
-    "instagram": {
-      "client_id": "",
-      "client_secret": ""
-    },
-    "google_plus": {
-      "api_key": ""
-    }
-  },
   "development": {
     "twitter": {
       "consumer_key": "",
