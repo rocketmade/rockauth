@@ -15,7 +15,10 @@ RSpec.shared_context :social_auth, social_auth: true do
   before :each do
     allow(FbGraph2::User).to receive(:me).and_return social_user_auth
     allow(Twitter::REST::Client).to receive(:new).and_return social_user_auth
-    allow(GooglePlus::Person).to receive(:get).and_return social_user_auth
     allow(Instagram).to receive(:client).and_return social_user_auth
+
+    stub_request(:get, %r{\Ahttps://www.googleapis.com/oauth2/v3/tokeninfo\?id_token=})
+      .with(headers: {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'})
+      .to_return(status: 200, body: { 'sub': provider_user_id }.to_json, headers: {})
   end
 end

@@ -32,7 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'twitter'
   s.add_development_dependency 'fb_graph2'
   s.add_development_dependency 'instagram'
-  s.add_development_dependency 'google_plus'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'timecop'
   s.add_development_dependency 'activeadmin'

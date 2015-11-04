@@ -62,15 +62,25 @@ module Rockauth
 
     class GooglePlus < ProviderUserInformation
       def user_id
-        user.try(:id)
+        user[:sub]
       end
 
+      # TODO: Implement a way of retreiving profile picture from google.
       def picture_url
-        (user.try(:image) || {})[:url]
+        {}
       end
 
       def get_user
-        ::GooglePlus::Person.get('me', key: access_token)
+        content = nil
+
+        uri = URI.parse('https://www.googleapis.com/oauth2/v3/tokeninfo')
+        uri.query = { id_token: access_token }.to_param
+
+        open(uri) do |f|
+          content = f.read
+        end
+
+        JSON.load(content).with_indifferent_access
       end
     end
 
