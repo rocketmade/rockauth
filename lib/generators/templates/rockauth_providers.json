@@ -8,9 +8,8 @@
       "client_id": "",
       "client_secret": ""
     },
-    "google_plus": {
-      "api_key": ""
-    }
+    "twitter": {},
+    "google_plus": {}
   },
   "qa": {
     "twitter": {
@@ -21,9 +20,8 @@
       "client_id": "",
       "client_secret": ""
     },
-    "google_plus": {
-      "api_key": ""
-    }
+    "twitter": {},
+    "google_plus": {}
   },
   "staging": {
     "twitter": {
@@ -34,9 +32,8 @@
       "client_id": "",
       "client_secret": ""
     },
-    "google_plus": {
-      "api_key": ""
-    }
+    "twitter": {},
+    "google_plus": {}
   },
   "production": {
     "twitter": {
@@ -47,8 +44,7 @@
       "client_id": "",
       "client_secret": ""
     },
-    "google_plus": {
-      "api_key": ""
-    }
+    "twitter": {},
+    "google_plus": {}
   }
 }

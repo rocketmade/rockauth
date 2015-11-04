@@ -29,9 +29,7 @@ Rockauth.configure do |config|
 
   begin
     parsed_json = JSON.parse(File.read(Rails.root.join('config/rockauth_providers.json')))[Rails.env] || {}
-    parsed_json.with_indifferent_access.each do |provider, creds|
-      config.providers.public_send("#{provider}=", creds)
-    end
+    OpenStruct.new(parsed_json.with_indifferent_access)
   rescue Errno::ENOENT
     warn 'Could not load Rockauth providers from config/rockauth_providers.json'
   end
@@ -40,6 +38,4 @@ Rockauth.configure do |config|
     instagram_config.client_id     = config.providers.instagram[:client_id]
     instagram_config.client_secret = config.providers.instagram[:client_secret]
   end
-
-  GooglePlus.api_key = config.providers.google_plus[:api_key]
 end
