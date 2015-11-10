@@ -16,6 +16,13 @@ module Rockauth
         { user: user_attributes.merge(authentication: authentication_attributes) }
       end
 
+      it 'does not require first or last name' do
+        parameters[:user].delete(:first_name)
+        parameters[:user].delete(:last_name)
+        post :create, parameters
+        expect(response).to be_success
+      end
+
       it 'creates the user' do
         expect do
           post :create, parameters

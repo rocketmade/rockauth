@@ -62,7 +62,7 @@ module Rockauth
     end
 
     def permitted_params
-      permitted = params.permit(user: [*%i(email password),
+      permitted = params.permit(user: [*%i(email password first_name last_name),
                                        provider_authentications: [:provider, :provider_access_token, :provider_access_token_secret],
                                        authentication: [*%i(auth_type client_id client_secret client_version device_identifier device_description device_os device_os_version)]]).to_h.with_indifferent_access
       user_params = permitted[:user] || {}

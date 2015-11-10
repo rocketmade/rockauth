@@ -1,6 +1,6 @@
 module Rockauth
   class UserSerializer < BaseSerializer
-    attributes :id, :email
+    attributes :id, :email, :first_name, :last_name
 
     has_one :authentication
     has_many :provider_authentications
