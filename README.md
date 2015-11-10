@@ -177,8 +177,10 @@ Request JSON:
 ```ruby
 {
   "user": {
-    "email":    <string>, # - Required if no provider authentications are given
-    "password": <string>, # - Required if no provider authentications are given
+    "first_name": <string>, # - Optional
+    "last_name": <string>, # - Optional
+    "email":      <string>, # - Required if no provider authentications are given
+    "password":   <string>, # - Required if no provider authentications are given
     "authentication": { # - Required
       "client_id":             <string>, # - Required
       "client_secret":         <string>, # - Required
