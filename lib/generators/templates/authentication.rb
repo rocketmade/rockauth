@@ -1,3 +1,4 @@
-class Authentication < Rockauth::Authentication
-  belongs_to :provider_authentication, class_name: "::ProviderAuthentication"
+class Authentication < ActiveRecord::Base
+  include Rockauth::Models::Authentication
+  rockauth_authentication
 end
