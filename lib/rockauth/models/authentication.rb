@@ -62,10 +62,10 @@ module Rockauth
     end
 
     module ClassMethods
-      def rockauth_authentication include_associations: true, provider_authentication_class: "Rockauth::ProviderAuthentication"
+      def rockauth_authentication include_associations: true, provider_authentication_class_name: "Rockauth::ProviderAuthentication"
         if include_associations
           belongs_to :resource_owner, polymorphic: true, inverse_of: :authentications
-          belongs_to :provider_authentication, class_name: provider_authentication_class
+          belongs_to :provider_authentication, class_name: provider_authentication_class_name
 
           accepts_nested_attributes_for :provider_authentication
         end
