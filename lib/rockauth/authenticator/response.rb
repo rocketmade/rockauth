@@ -26,7 +26,7 @@ module Rockauth
     end
 
     def render_error
-      { json: error, serializer: Rockauth::Configuration.serializers.error.safe_constantize, status: error.status_code }
+      Rockauth::Configuration.error_renderer.call(error)
     end
   end
 end
