@@ -1,7 +1,7 @@
 module Rockauth
   Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients
                                  resource_owner_class warn_missing_social_auth_gems providers jwt
-                                 serializers generate_active_admin_resources active_admin_menu_name)) do
+                                 serializers generate_active_admin_resources active_admin_menu_name error_renderer)) do
     def resource_owner_class= arg
       @constantized_resource_owner_class = nil
       @resource_owner_class = arg
@@ -38,6 +38,10 @@ module Rockauth
 
     config.generate_active_admin_resources = nil
     config.active_admin_menu_name = 'Authentication'
+
+    config.error_renderer = -> error do
+      { json: error, serializer: Rockauth::Configuration.serializers.error.safe_constantize, status: error.status_code }
+    end
   end
 
   def self.configure

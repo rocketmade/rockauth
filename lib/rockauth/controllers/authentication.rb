@@ -3,7 +3,8 @@ module Rockauth
     extend ActiveSupport::Concern
 
     def render_error status_code=500, message=I18n.t("rockauth.errors.server_error"), validation_errors=nil
-      render json: Errors::ControllerError.new(status_code, message, validation_errors), serializer: ErrorSerializer, status: status_code
+      error = Errors::ControllerError.new(status_code, message, validation_errors)
+      render Rockauth::Configuration.error_renderer.call(error)
     end
 
     def render_unauthorized
