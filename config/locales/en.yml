@@ -2,9 +2,9 @@ en:
   errors:
     messages:
       rockauth_cannot_be_changed: "cannot be changed"
-      forgot_password_email_sent: "Please check your email for instructions to reset your password."
-      forgot_password_success: "Your password has been changed. You may now log in."
   rockauth:
+    forgot_password_email_sent: "Please check your email for instructions to reset your password."
+    forgot_password_success: "Your password has been changed. You may now log in."
     errors:
       unauthorized: "You must be logged in to continue."
       authentication_failed: "Authentication failure."

@@ -3,6 +3,12 @@ require 'active_model_serializers'
 
 module Rockauth
   class PasswordsController < ActionController::API
+    rescue_from ActionController::ParameterMissing do |exception|
+      errors = ActiveModel::Errors.new nil
+      errors.add(exception.param, I18n.t('errors.messages.invalid'))
+      render_error 400, I18n.t('rockauth.errors.forgot_password_failed'), errors
+    end
+
     def forgot
       username = params.require(:user).require(:username)
       @resource_owner = resource_owner_class.with_username(username).first
@@ -27,7 +33,7 @@ module Rockauth
           render json: { meta: { message: I18n.t("rockauth.forgot_password_success") } }, status: 200
         else
           Rails.logger.error "Could not reset a users password despite a valid token: #{@resource_owner.errors.to_json}"
-          render_error 400, I18n.t("rockauth.errors.forgot_password_failed"), resource.errors
+          render_error 400, I18n.t("rockauth.errors.forgot_password_failed"), @resource_owner.errors
         end
       else
         errors = resource_owner_class.new.errors
@@ -43,7 +49,9 @@ module Rockauth
     end
 
     def render_forgot_password_not_found
-      render_error 400, I18n.t('rockauth.forgot_password_not_found'), { username: [I18n.t('activerecord.errors.invalid')] }
+      errors = ActiveModel::Errors.new nil
+      errors.add(:username, I18n.t('errors.messages.invalid'))
+      render_error 400, I18n.t('rockauth.errors.forgot_password_not_found'), errors
     end
 
     def resource_owner_class
