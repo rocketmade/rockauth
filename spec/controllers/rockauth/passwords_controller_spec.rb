@@ -58,6 +58,8 @@ module Rockauth
             post :forgot, user: { username: 'blarg' }
             expect(response.status).to eq 400
             expect(parsed_response).to have_key :error
+            expect(parsed_response[:error]).to have_key :validation_errors
+            expect(parsed_response[:error][:validation_errors]).to have_key :username
           end
         end
       end

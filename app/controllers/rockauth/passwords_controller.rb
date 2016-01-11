@@ -30,7 +30,9 @@ module Rockauth
           render_error 400, I18n.t("rockauth.errors.forgot_password_failed"), resource.errors
         end
       else
-        render_error 400, I18n.t("rockauth.errors.forgot_password_invalid_token")
+        errors = resource_owner_class.new.errors
+        errors.add(:password_reset_token, :invalid)
+        render_error 400, I18n.t("rockauth.errors.forgot_password_invalid_token"), errors
       end
     end
 
@@ -41,7 +43,7 @@ module Rockauth
     end
 
     def render_forgot_password_not_found
-      render_error 400, I18n.t('rockauth.forgot_password_not_found')
+      render_error 400, I18n.t('rockauth.forgot_password_not_found'), { username: [I18n.t('activerecord.errors.invalid')] }
     end
 
     def resource_owner_class
