@@ -81,7 +81,7 @@ module Rockauth
         validates_inclusion_of :auth_type,     in: %w(password assertion registration)
         validates_presence_of  :client_id
         validates_presence_of  :client_secret, on: :create
-        validates_presence_of  :resource_owner
+        validates_presence_of  :resource_owner, unless: :password? # resource owner validation is implicit in the username and password check
         validates_presence_of  :expiration
         validates_presence_of  :issued_at
         validates_presence_of  :auth_type
@@ -105,7 +105,8 @@ module Rockauth
         validates_presence_of :username, if: :password?, on: :create
         validates_presence_of :password, if: :password?, on: :create
         validate on: :create, if: :password? do
-          if resource_owner.present? && !resource_owner.authenticate(password)
+          if resource_owner.blank? || !resource_owner.authenticate(password)
+            errors.add :username, :invalid
             errors.add :password, :invalid
           end
         end

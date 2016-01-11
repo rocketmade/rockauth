@@ -6,4 +6,6 @@ Rockauth::Engine.routes.draw do
 
   resource :me, only: [:show, :create, :update, :destroy], controller: 'rockauth/me'
   resources :provider_authentications, controller: 'rockauth/provider_authentications'
+  post 'passwords/forgot', controller: 'rockauth/passwords', action: 'forgot'
+  post 'passwords/reset', controller: 'rockauth/passwords', action: 'reset'
 end
