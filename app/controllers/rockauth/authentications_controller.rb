@@ -5,6 +5,7 @@ module Rockauth
   class AuthenticationsController < ActionController::API
     include ActionController::Helpers
     include ActionController::Serialization
+    include Rockauth::Controllers::Scope
 
     serialization_scope :view_context
 
@@ -35,14 +36,6 @@ module Rockauth
 
     def resource
       @authentication
-    end
-
-    def authentication_options
-      {}
-    end
-
-    def resource_owner_class
-      Rockauth::Configuration.resource_owner_class
     end
   end
 end

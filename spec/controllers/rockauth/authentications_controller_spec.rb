@@ -1,9 +1,10 @@
 require 'spec_helper'
-
+require 'pry'
 module Rockauth
   RSpec.describe AuthenticationsController, type: :controller do
     controller do
     end
+
     routes { Engine.routes }
 
     describe 'GET index' do
@@ -12,6 +13,7 @@ module Rockauth
         expect(response).not_to be_success
         expect(response.status).to eq 401
       end
+
       context "when authenticated", authenticated_request: true do
         let(:authentication) { given_auth }
 
@@ -43,7 +45,7 @@ module Rockauth
         end
 
         it 'is not successful' do
-          post :authenticate, authentication_parameters
+          post :authenticate, authentication_parameters.merge(resource_owner_class_name: 'Rockauth::User')
           expect(response).not_to be_success
           expect(response.status).to eq 400
         end

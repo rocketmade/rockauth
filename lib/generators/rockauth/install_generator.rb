@@ -38,8 +38,8 @@ module Rockauth
 
     def install_route
       route <<ROUTE
-namespace :api do
-    mount Rockauth::Engine => '/'
+scope '/api' do
+    rockauth 'User', registration: false, password_reset: true
   end
 ROUTE
     end

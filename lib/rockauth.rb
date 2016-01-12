@@ -10,6 +10,7 @@ module Rockauth
   autoload :Errors
   autoload :Models
   autoload :ProviderUserInformation
+  autoload :Routes
 end
 require 'rockauth/configuration'
 require 'rockauth/engine'

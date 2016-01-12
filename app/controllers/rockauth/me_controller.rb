@@ -5,8 +5,13 @@ module Rockauth
   class MeController < ActionController::API
     include ActionController::Helpers
     include ActionController::Serialization
+    include Rockauth::Controllers::Scope
 
     before_filter :authenticate_resource_owner!, except: [:create]
+
+    before_filter only: :create do
+      raise ActiveRecord::NotFoundError unless scope_settings[:registration]
+    end
 
     helper_method :include_authentication?
 
@@ -27,7 +32,7 @@ module Rockauth
     end
 
     def update
-      resource.assign_attributes permitted_params.fetch(:user, {})
+      resource.assign_attributes permitted_params.fetch(param_key, {})
       render_resource_or_error resource.save
     end
 
@@ -58,31 +63,35 @@ module Rockauth
     protected
 
     def resource
-      @user ||= current_resource_owner
+      @resource_owner ||= current_resource_owner
+    end
+
+    def param_key
+      resource_owner_class.model_name.param_key.to_sym
     end
 
     def permitted_params
-      permitted = params.permit(user: [*%i(email password first_name last_name),
-                                       provider_authentications: [:provider, :provider_access_token, :provider_access_token_secret],
-                                       authentication: [*%i(auth_type client_id client_secret client_version device_identifier device_description device_os device_os_version)]]).to_h.with_indifferent_access
-      user_params = permitted[:user] || {}
+      permitted = params.permit(param_key => [*%i(email password first_name last_name),
+                                       :provider_authentications => [:provider, :provider_access_token, :provider_access_token_secret],
+                                       :authentication => [*%i(auth_type client_id client_secret client_version device_identifier device_description device_os device_os_version)]]).to_h.with_indifferent_access
+      resource_params = permitted[param_key] || {}
 
       if action_name == 'update'
-        user_params.delete :authentication
+        resource_params.delete :authentication
       else
-        user_params[:authentications_attributes] = [(user_params.delete(:authentication) || {}).merge(auth_type: 'registration')]
+        resource_params[:authentications_attributes] = [(resource_params.delete(:authentication) || {}).merge(auth_type: 'registration')]
       end
 
-      if user_params.has_key? :provider_authentications
-        user_params[:provider_authentications_attributes] = user_params.delete(:provider_authentications)
+      if resource_params.has_key? :provider_authentications
+        resource_params[:provider_authentications_attributes] = resource_params.delete(:provider_authentications)
       end
 
       permitted
     end
 
     def build_resource
-      @user = User.new.tap do |user|
-        user.assign_attributes permitted_params[:user]
+      @resource_owner = resource_owner_class.new.tap do |owner|
+        owner.assign_attributes permitted_params[param_key]
       end
     end
 
