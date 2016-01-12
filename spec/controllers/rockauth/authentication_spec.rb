@@ -14,6 +14,10 @@ module Rockauth
         current_resource_owner.try(:bar)
         render json: { resource_owner_id: current_resource_owner.try(:id) }
       end
+
+      def resource_owner_class
+        Rockauth::User
+      end
     end
 
     context "logged out" do

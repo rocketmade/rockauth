@@ -104,10 +104,11 @@ Successful Response (HTTP Status 200):
 ```ruby
 {
   "authentication": {
-    "id":         <integer>,
-    "token":      <string>, # JWT
-    "expiration": <integer>,
-    "user": {
+    "id":                  <integer>,
+    "token":               <string>, # JWT
+    "expiration":          <integer>,
+    "resource_owner_type": <string>,
+    "resource_owner": {
       "id":    <integer>,
       "email": <string>
     },
