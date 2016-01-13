@@ -3,6 +3,12 @@ require 'active_model_serializers'
 
 module Rockauth
   class PasswordsController < ActionController::API
+    include Rockauth::Controllers::Scope
+
+    before_filter do
+      raise ActiveRecord::NotFoundError unless scope_settings[:password_reset]
+    end
+
     rescue_from ActionController::ParameterMissing do |exception|
       errors = ActiveModel::Errors.new nil
       errors.add(exception.param, I18n.t('errors.messages.invalid'))
@@ -52,10 +58,6 @@ module Rockauth
       errors = ActiveModel::Errors.new nil
       errors.add(:username, I18n.t('errors.messages.invalid'))
       render_error 400, I18n.t('rockauth.errors.forgot_password_not_found'), errors
-    end
-
-    def resource_owner_class
-      Rockauth::Configuration.resource_owner_class
     end
   end
 end

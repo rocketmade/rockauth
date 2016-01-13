@@ -1,9 +1,7 @@
 require 'spec_helper'
-
+require 'pry'
 module Rockauth
   RSpec.describe AuthenticationsController, type: :controller do
-    controller do
-    end
     routes { Engine.routes }
 
     describe 'GET index' do
@@ -12,6 +10,7 @@ module Rockauth
         expect(response).not_to be_success
         expect(response.status).to eq 401
       end
+
       context "when authenticated", authenticated_request: true do
         let(:authentication) { given_auth }
 
@@ -43,7 +42,7 @@ module Rockauth
         end
 
         it 'is not successful' do
-          post :authenticate, authentication_parameters
+          post :authenticate, authentication_parameters.merge(resource_owner_class_name: 'Rockauth::User')
           expect(response).not_to be_success
           expect(response.status).to eq 400
         end
@@ -114,7 +113,9 @@ module Rockauth
 
         it 'includes the authentication token_id in the response' do
           post :authenticate, authentication_parameters
-          expect(parsed_response['authentication']).to have_key 'user'
+          expect(parsed_response['authentication']).to have_key 'resource_owner'
+          expect(parsed_response['authentication']).to have_key 'resource_owner_type'
+          expect(parsed_response['authentication']['resource_owner_type']).to eq 'rockauth/user'
         end
 
         context "when missing authentication parameters" do
@@ -193,7 +194,7 @@ module Rockauth
                 post :authenticate, authentication_parameters
               }.to change { User.count }.by 1
               expect(response).to be_success
-              expect(parsed_response['authentication']['user']['id']).to eq User.last.id
+              expect(parsed_response['authentication']['resource_owner']['id']).to eq User.last.id
               expect(parsed_response['authentication']['provider_authentication']['provider']).to eq provider
             end
 
@@ -203,7 +204,7 @@ module Rockauth
                 post :authenticate, authentication_parameters
               }.not_to change { [User.count, ProviderAuthentication.count] }
               expect(response).to be_success
-              expect(parsed_response['authentication']['user']['id']).to eq user.id
+              expect(parsed_response['authentication']['resource_owner']['id']).to eq user.id
               expect(parsed_response['authentication']['provider_authentication']['id']).to eq provider_authentication.id
             end
 

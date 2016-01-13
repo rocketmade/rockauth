@@ -1,21 +1,25 @@
 module Rockauth
   Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients
-                                 resource_owner_class warn_missing_social_auth_gems providers jwt
+                                 authentication_class warn_missing_social_auth_gems providers jwt
                                  serializers generate_active_admin_resources active_admin_menu_name error_renderer
-                                 password_reset_token_time_to_live email_from forgot_password_always_successful)) do
-    def resource_owner_class= arg
-      @constantized_resource_owner_class = nil
-      @resource_owner_class = arg
+                                 password_reset_token_time_to_live email_from forgot_password_always_successful
+                                 controller_mappings)) do
+
+    def authentication_class= arg
+      @constantized_authentication_class = nil
+      @authentication_class = arg
     end
-    def resource_owner_class
-      @constantized_resource_owner_class ||= (@resource_owner_class.respond_to?(:constantize) ?  @resource_owner_class.constantize : @resource_owner_class)
+
+    def authentication_class
+      @constantized_authentication_class ||= (@authentication_class.respond_to?(:constantize) ?  @authentication_class.constantize : @authentication_class)
     end
+
   end.new.tap do |config|
     config.allowed_password_length = 8..72
     config.email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/
     config.token_time_to_live = 365 * 24 * 60 * 60
     config.clients = []
-    config.resource_owner_class = 'Rockauth::User'
+
     config.warn_missing_social_auth_gems = true
 
     config.providers = Struct.new(*%i(twitter instagram google_plus)).new.tap do |providers|
@@ -42,6 +46,9 @@ module Rockauth
     config.password_reset_token_time_to_live = 24.hours
     config.email_from = 'change-me-in-config-initializers-rockauth-rb@please-change-me.example'
     config.forgot_password_always_successful = false
+    config.controller_mappings = {}
+
+    config.authentication_class = 'Rockauth::Authentication'
 
     config.error_renderer = -> error do
       { json: error, serializer: Rockauth::Configuration.serializers.error.safe_constantize, status: error.status_code }

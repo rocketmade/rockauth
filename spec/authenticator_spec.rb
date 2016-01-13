@@ -5,6 +5,9 @@ module Rockauth
     include RSpec::Rails::ControllerExampleGroup
 
     controller Rockauth::AuthenticationsController do
+      def resource_owner_class
+        Rockauth::User
+      end
     end
 
     describe ".verified_authentication_for_request" do

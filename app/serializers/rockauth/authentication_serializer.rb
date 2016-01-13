@@ -1,8 +1,8 @@
 module Rockauth
   class AuthenticationSerializer < BaseSerializer
-    attributes(*%i(id token token_id expiration client_version device_identifier device_os device_os_version device_description))
+    attributes(*%i(id token token_id expiration client_version device_identifier device_os device_os_version device_description resource_owner_type))
 
-    has_one Rockauth::Configuration.resource_owner_class.model_name.element.to_sym
+    has_one :resource_owner
     has_one :provider_authentication
 
     def include_token_id
@@ -13,11 +13,11 @@ module Rockauth
       object.token.present?
     end
 
-    define_method Rockauth::Configuration.resource_owner_class.model_name.element do
-      object.resource_owner
+    def resource_owner_type
+      object.resource_owner_type.to_s.underscore
     end
 
-    define_method(:"include_#{Rockauth::Configuration.resource_owner_class.model_name.element}?") do
+    def include_resource_owner?
       !scope.try(:include_authentication?)
     end
   end

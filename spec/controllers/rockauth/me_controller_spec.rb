@@ -57,7 +57,7 @@ module Rockauth
 
         it "records detailed information to the authentication" do
           post :create, parameters
-          auth = assigns(:user).authentications.first
+          auth = assigns(:resource_owner).authentications.first
           %i(client_version device_identifier device_os device_os_version device_description).each do |key|
             expect(auth.public_send(key)).to eq authentication_attributes[key]
           end
@@ -156,7 +156,7 @@ module Rockauth
         it 'shows the user' do
           get :show
           expect(response).to be_success
-          expect(assigns(:user)).to eq given_auth.resource_owner
+          expect(assigns(:resource_owner)).to eq given_auth.resource_owner
         end
       end
     end
