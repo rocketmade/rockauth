@@ -25,6 +25,10 @@ module Rockauth
       invoke 'rockauth:migrations'
     end
 
+    def generate_admin_pages
+      invoke 'rockauth:admin'
+    end
+
     def generate_serializers
       puts File.expand_path('../../../app/serializers/rockauth/*.rb', File.dirname(__FILE__))
       Dir[File.expand_path('../../../app/serializers/rockauth/*.rb', File.dirname(__FILE__))].each do |f|

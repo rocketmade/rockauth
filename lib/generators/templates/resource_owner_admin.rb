@@ -1,11 +1,11 @@
-Rockauth::Configuration.controller_mappings.each_key do |klass|
-  ActiveAdmin.register klass.safe_constantize do
+[User].each do |klass|
+  ActiveAdmin.register klass do
     menu parent: Rockauth::Configuration.active_admin_menu_name
 
     controller do
       helper_method :attribute_list
       def attribute_list
-        (Rockauth::Configuration.resource_owner_class.attribute_names.map(&:to_sym) - %i(id password_digest created_at updated_at))
+        (klass.attribute_names.map(&:to_sym) - %i(id password_digest created_at updated_at))
       end
     end
 
