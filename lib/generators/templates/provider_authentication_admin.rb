@@ -1,4 +1,4 @@
-ActiveAdmin.register ProviderAuthentications, as: "ProviderAuthentication" do
+ActiveAdmin.register ProviderAuthentication, as: "ProviderAuthentication" do
   menu parent: Rockauth::Configuration.active_admin_menu_name
 
   actions :all, except: %i(new create edit update)
