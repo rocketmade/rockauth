@@ -18,7 +18,9 @@ Rockauth.configure do |config|
 
   # config.generate_active_admin_resources = nil # nil decides based on whether active_admin is loaded
   # config.active_admin_menu_name = 'User Authentication'
-
+  # config.password_reset_token_time_to_live = 24.hours
+  config.email_from = 'change-me-in-config-initializers-rockauth-rb@please-change-me.example'
+  # config.forgot_password_always_successful = false
   begin
     Array(YAML.load_file(Rails.root.join('config/rockauth_clients.yml'))[Rails.env]).each do |client_config|
       config.clients << Rockauth::Client.new(*(%w(id secret title).map { |k| client_config["client_#{k}"] }))

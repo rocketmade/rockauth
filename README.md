@@ -334,10 +334,93 @@ DELETE /api/provider_authentications/:id.json
 
 This endpoint is meant to delete a provider authentication, therefore unlinking the given social network account.
 
+##### Initiate a password reset
+
+```
+POST /api/passwords/forgot.json
+```
+
+This endpoint is meant to be used for associating new social networks to an existing account.
+
+Request JSON:
+
+```ruby
+{
+  "user": {
+    "username": <string> # Required
+  }
+}
+```
+
+Successful Response (HTTP Status 200):
+
+```ruby
+{
+  "meta": {
+    message: "Please check your email for instructions to reset your password."
+  }
+}
+```
+
+Errors may only be generated if `Rockauth::Configuration.forgot_password_always_successful = false`
+
+Example Error Response (HTTP Status 400):
+
+```ruby
+{
+  "error": {
+    "status_code": 400,
+    "message": "We could not find your account with the information provided. Please try again or contact your administrator for support.",
+    "validation_errors": {
+      "username": ["is invalid"]
+    }
+  }
+}
+```
+
+##### Complete a password reset
+
+```
+POST /api/passwords/reset.json
+```
+
+```ruby
+{
+  "user": {
+    "password_reset_token": <string>, # Required
+    "password":             <string>  # Required
+  }
+}
+```
+
+Successful Response (HTTP Status 200):
+
+```ruby
+{
+  "meta": {
+    message: "Your password has been changed. You may now log in."
+  }
+}
+```
+
+Example Error Response (HTTP Status 400):
+
+```ruby
+{
+  "error": {
+    "status_code": 400,
+    "message": "We could not find your account with the information provided. Please try again or contact your administrator for support.",
+    "validation_errors": {
+      "password_reset_token": ["is invalid"],
+      "password": ["is invalid"]
+    }
+  }
+}
+```
 
 ## Supported Versions
 
-Rails >= 4.0.0
+Rails >= 4.2.0
 
 Ruby >= 2.1.0
 

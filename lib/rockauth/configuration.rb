@@ -1,7 +1,8 @@
 module Rockauth
   Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients
                                  resource_owner_class warn_missing_social_auth_gems providers jwt
-                                 serializers generate_active_admin_resources active_admin_menu_name error_renderer)) do
+                                 serializers generate_active_admin_resources active_admin_menu_name error_renderer
+                                 password_reset_token_time_to_live email_from forgot_password_always_successful)) do
     def resource_owner_class= arg
       @constantized_resource_owner_class = nil
       @resource_owner_class = arg
@@ -38,6 +39,9 @@ module Rockauth
 
     config.generate_active_admin_resources = nil
     config.active_admin_menu_name = 'Authentication'
+    config.password_reset_token_time_to_live = 24.hours
+    config.email_from = 'change-me-in-config-initializers-rockauth-rb@please-change-me.example'
+    config.forgot_password_always_successful = false
 
     config.error_renderer = -> error do
       { json: error, serializer: Rockauth::Configuration.serializers.error.safe_constantize, status: error.status_code }
