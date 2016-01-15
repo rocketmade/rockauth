@@ -151,16 +151,16 @@ Response:
 {"authentication":{"id":1,"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NjkwOTAyOTYsInN1YiI6MSwic3ViX3R5cGUiOiJSb2NrYXV0aDo6VXNlciJ9.gNvFfI-JapDgmSUhAcnui63fOEVz9EnsnzLxqjZW-WQ","expiration":1469090296,"client_version":null,"device_identifier":null,"device_os":null,"device_os_version":null,"device_description":null,"user":{"id":1,"email":"test@example.com","provider_authentications":[]},"provider_authentication":null}}
 ```
 
-###### Index Authorizations (List all logged-in devices)
+###### Index Authentications (List all logged-in devices)
 
 ```
-GET /api/authorizations.json
+GET /api/authentications.json
 ```
 
-##### Delete Authorization (Log Out)
+##### Delete Authentication (Log Out)
 
 ```
-DELETE /api/authorizations(/:id)?.json
+DELETE /api/authentications(/:id)?.json
 ```
 
 This endpoint deletes an authorization token, effectively logging the user out. If an ID is provided, that authentication will be deleted. If no id is provided, the current authentication token is deleted.

@@ -239,6 +239,13 @@ module Rockauth
               delete :destroy
             }.to change { Authentication.where(id: authentication.id).count }.from(1).to(0)
           end
+
+          it "responds with 200 and an empty object" do
+            auth = create(:authentication, resource_owner: authentication.resource_owner)
+            delete :destroy, id: auth.id
+            expect(response.status).to eq 200
+            expect(response.body).to eq '{}'
+          end
         end
 
         context "with an id" do
@@ -247,6 +254,13 @@ module Rockauth
             expect {
               delete :destroy, id: auth.id
             }.to change { Authentication.where(id: auth.id).count }.from(1).to(0)
+          end
+
+          it "responds with 200 and an empty object" do
+            auth = create(:authentication, resource_owner: authentication.resource_owner)
+            delete :destroy, id: auth.id
+            expect(response.status).to eq 200
+            expect(response.body).to eq '{}'
           end
         end
 
