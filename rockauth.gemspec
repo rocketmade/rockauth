@@ -21,10 +21,11 @@ Gem::Specification.new do |s|
   s.add_dependency 'active_model_serializers'
   s.add_dependency 'bcrypt', '>= 3.1.10'
   s.add_dependency 'jwt'
+  s.add_dependency 'hooks'
 
   s.add_development_dependency 'pg'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'rspec-mocks', '3.4.0' # 3.4.1 caused stack too deep errors
+  s.add_development_dependency 'rspec-mocks', '3.3.2' # 3.4.1 caused stack too deep errors
   s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'shoulda-matchers', '~> 2.8.0'
   s.add_development_dependency 'simplecov'

@@ -20,7 +20,7 @@ module Rockauth
     end
 
     def current_authentication
-      if @_authentication_checked
+      if @current_authentication.present? || @_authentication_checked
         @current_authentication
       else
         @_authentication_checked = true

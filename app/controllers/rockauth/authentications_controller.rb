@@ -11,6 +11,9 @@ module Rockauth
 
     before_filter :authenticate_resource_owner!, except: [:authenticate]
 
+    after_action  :after_authentication, only: [:authenticate]
+    before_action :before_logout,        only: [:destroy]
+
     def index
       @authentications = current_resource_owner.authentications
       render json: @authentications
@@ -19,7 +22,7 @@ module Rockauth
     def authenticate
       @auth_response = Authenticator.authentication_request(request, self)
       if @auth_response.success
-        @current_resource_owner = @auth_response.resource_owner
+        @current_authentication = @auth_response.authentication
       end
       render @auth_response.render
     end
@@ -36,6 +39,16 @@ module Rockauth
 
     def resource
       @authentication
+    end
+
+    private
+
+    def after_authentication
+      current_resource_owner.run_hook(:after_authentication, current_authentication) if current_authentication
+    end
+
+    def before_logout
+      current_resource_owner.run_hook(:before_logout, current_authentication) if current_authentication
     end
   end
 end
