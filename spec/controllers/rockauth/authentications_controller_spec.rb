@@ -55,7 +55,6 @@ module Rockauth
             expect(parsed_response['error']['validation_errors'][key]).to include 'can\'t be blank'
           end
         end
-
       end
 
       context "when authenticating with a password" do
@@ -98,6 +97,12 @@ module Rockauth
             %i(client_version device_identifier device_os device_os_version device_description).each do |key|
               expect(auth.public_send(key)).to eq authentication_parameters[:authentication][key]
             end
+          end
+
+          it 'calls the after_authentication hook' do
+            expect_any_instance_of(Rockauth::User).to receive(:run_hook).with(:after_authentication, anything).once
+
+            post :authenticate, authentication_parameters
           end
         end
 
@@ -241,10 +246,15 @@ module Rockauth
           end
 
           it "responds with 200 and an empty object" do
-            auth = create(:authentication, resource_owner: authentication.resource_owner)
-            delete :destroy, id: auth.id
+            delete :destroy
             expect(response.status).to eq 200
             expect(response.body).to eq '{}'
+          end
+
+          it 'calls after logout hook' do
+            expect_any_instance_of(Rockauth::User).to receive(:run_hook).with(:before_logout, anything).once
+
+            delete :destroy
           end
         end
 
@@ -261,6 +271,13 @@ module Rockauth
             delete :destroy, id: auth.id
             expect(response.status).to eq 200
             expect(response.body).to eq '{}'
+          end
+
+          it 'calls after logout hook' do
+            auth = create(:authentication, resource_owner: authentication.resource_owner)
+            expect_any_instance_of(Rockauth::User).to receive(:run_hook).with(:before_logout, anything).once
+
+            delete :destroy, id: auth.id
           end
         end
 

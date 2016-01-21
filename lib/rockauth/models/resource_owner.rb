@@ -1,6 +1,13 @@
+require 'hooks'
+
 module Rockauth
   module Models::ResourceOwner
     extend ActiveSupport::Concern
+
+    included do
+      include Hooks
+      define_hooks :after_authentication, :before_logout
+    end
 
     def assign_attributes_from_provider_user provider_user_information
     end

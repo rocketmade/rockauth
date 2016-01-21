@@ -14,6 +14,5 @@ module Rockauth
     resource_owner
 
     include Models::User
-
   end
 end
