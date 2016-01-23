@@ -19,6 +19,7 @@ module Rockauth
     config.email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/
     config.token_time_to_live = 365 * 24 * 60 * 60
     config.clients = []
+    config.implicit_social_registration = true
 
     config.warn_missing_social_auth_gems = true
 

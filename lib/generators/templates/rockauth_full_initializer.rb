@@ -7,6 +7,7 @@ Rockauth.configure do |config|
   # config.warn_missing_social_auth_gems = true
   # config.jwt.issuer = ''
   # config.jwt.signing_method = 'HS256'
+  # config.implicit_social_registration = true
 
   config.jwt.secret              = '<%= SecureRandom.base64(32) %>'
   config.authentication_class = '::Authentication'
