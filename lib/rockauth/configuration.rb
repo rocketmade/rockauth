@@ -3,7 +3,7 @@ module Rockauth
                                  authentication_class warn_missing_social_auth_gems providers jwt
                                  serializers generate_active_admin_resources active_admin_menu_name error_renderer
                                  password_reset_token_time_to_live email_from forgot_password_always_successful
-                                 controller_mappings)) do
+                                 controller_mappings implicit_social_registration)) do
 
     def authentication_class= arg
       @constantized_authentication_class = nil
@@ -19,6 +19,7 @@ module Rockauth
     config.email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/
     config.token_time_to_live = 365 * 24 * 60 * 60
     config.clients = []
+    config.implicit_social_registration = true
 
     config.warn_missing_social_auth_gems = true
 

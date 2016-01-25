@@ -49,6 +49,8 @@ module Rockauth
         end
 
         define_method :handle_missing_resource_owner_on_valid_assertion do
+          return unless Rockauth::Configuration.implicit_social_registration 
+
           self.resource_owner = resource_owner_class.new
           resource_owner.assign_attributes_from_provider_user(provider_user_information)
           resource_owner.provider_authentications << self

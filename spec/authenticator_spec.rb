@@ -116,6 +116,19 @@ module Rockauth
                 auth_response
               end.to change { Rockauth::User.count }.by 1
             end
+
+            context "when implicit social registration is false" do
+
+              it "does not create user" do
+                Rockauth::Configuration.implicit_social_registration = false
+
+                expect do
+                  auth_response
+                end.not_to change { Rockauth::User.count }
+
+                Rockauth::Configuration.implicit_social_registration = true
+              end
+            end
           end
         end
       end # ~ when authenticating with an assertion
