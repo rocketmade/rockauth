@@ -11,6 +11,10 @@ describe "authentications routes" do
     expect(GET: "/authentications").to route_to(controller: "rockauth/authentications", action: "index", resource_owner_class_name: 'Rockauth::User')
   end
 
+  it "routes GET /authentications/3 to show" do
+    expect(GET: "/authentications/3").to route_to(controller: "rockauth/authentications", action: "show", id: "3", resource_owner_class_name: 'Rockauth::User')
+  end
+
   it "routes DELETE /authentications to destroy" do
     expect(DELETE: "/authentications").to route_to(controller: "rockauth/authentications", action: "destroy", resource_owner_class_name: 'Rockauth::User')
   end

@@ -28,6 +28,35 @@ module Rockauth
       end
     end
 
+    describe 'GET show' do
+      let(:authentication) { create(:authentication) }
+      context "when unauthenticated" do
+        it "denies access" do
+          get :show, id: authentication.id, format: :json
+          expect(response).not_to be_success
+          expect(response.status).to eq 401
+        end
+      end
+
+      context "when authenticated", authenticated_request: true do
+        let(:authentication) { create(:authentication, resource_owner: given_auth.resource_owner) }
+        it "shows the authentication" do
+          get :show, id: authentication.id, format: :json
+          expect(response).to be_success
+          expect(assigns[:authentication]).to eq authentication
+        end
+
+        context "when the resource belongs to another resource owner" do
+          let(:authentication) { create(:authentication) }
+          it "denies access" do
+            expect {
+              get :show, id: authentication.id, format: :json
+            }.to raise_error ActiveRecord::RecordNotFound
+          end
+        end
+      end
+    end
+
     describe 'POST authenticate' do
       let(:authentication_parameters) do
         {}

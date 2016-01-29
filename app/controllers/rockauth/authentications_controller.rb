@@ -28,13 +28,18 @@ module Rockauth
     end
 
     def destroy
-      record = current_authentication
-      record = current_resource_owner.authentications.find(params[:id]) if params[:id].present?
-      if record.destroy
+      @authentication = current_authentication
+      @authentication = current_resource_owner.authentications.find(params[:id]) if params[:id].present?
+      if resource.destroy
         render json: {}, status: 200
       else
         render_error 409, I18n.t("rockauth.errors.destroy_error", resource: "Authentication")
       end
+    end
+
+    def show
+      @authentication = current_resource_owner.authentications.find(params[:id])
+      render json: @authentication
     end
 
     def resource
