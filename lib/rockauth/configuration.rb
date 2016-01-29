@@ -3,7 +3,7 @@ module Rockauth
                                  authentication_class warn_missing_social_auth_gems providers jwt
                                  serializers generate_active_admin_resources active_admin_menu_name error_renderer
                                  password_reset_token_time_to_live email_from forgot_password_always_successful
-                                 controller_mappings implicit_social_registration)) do
+                                 controller_mappings implicit_social_registration filter_include)) do
 
     def authentication_class= arg
       @constantized_authentication_class = nil
@@ -12,6 +12,10 @@ module Rockauth
 
     def authentication_class
       @constantized_authentication_class ||= (@authentication_class.respond_to?(:constantize) ?  @authentication_class.constantize : @authentication_class)
+    end
+
+    def filter_include *args
+      self[:filter_include].call *args
     end
 
   end.new.tap do |config|
@@ -53,6 +57,10 @@ module Rockauth
 
     config.error_renderer = -> error do
       { json: error, serializer: Rockauth::Configuration.serializers.error.safe_constantize, status: error.status_code }
+    end
+
+    config.filter_include = -> controller, is_collection do
+      nil
     end
   end
 

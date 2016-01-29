@@ -16,7 +16,7 @@ module Rockauth
 
     def index
       @authentications = current_resource_owner.authentications
-      render json: @authentications
+      render json: @authentications, include: Rockauth::Configuration.filter_include(self, true)
     end
 
     def authenticate
@@ -24,7 +24,7 @@ module Rockauth
       if @auth_response.success
         @current_authentication = @auth_response.authentication
       end
-      render @auth_response.render
+      render @auth_response.render.reverse_merge(include: Rockauth::Configuration.filter_include(self, false))
     end
 
     def destroy
@@ -39,7 +39,7 @@ module Rockauth
 
     def show
       @authentication = current_resource_owner.authentications.find(params[:id])
-      render json: @authentication
+      render json: @authentication, include: Rockauth::Configuration.filter_include(self, false)
     end
 
     def resource

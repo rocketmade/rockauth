@@ -45,7 +45,7 @@ module Rockauth
     end
 
     def render_resource
-      render json: resource, status: 200
+      render json: resource, status: 200, include: Rockauth::Configuration.filter_include(self, false)
     end
 
     def render_action_error error_status=400

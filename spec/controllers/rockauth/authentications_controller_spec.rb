@@ -4,6 +4,8 @@ module Rockauth
   RSpec.describe AuthenticationsController, type: :controller do
     routes { Engine.routes }
 
+    let(:resource_json_key) { 'rockauth/authentication' }
+
     describe 'GET index' do
       it 'requires authentication' do
         get :index
@@ -100,6 +102,29 @@ module Rockauth
           end.to change { Rockauth::Authentication.count }.by 1
           expect(response).to be_success
           expect(assigns(:auth_response).resource_owner).to eq user
+        end
+
+        it "includes the user by default" do
+          post :authenticate, authentication_parameters
+          expect(parsed_response).to have_key 'authentication'
+          expect(parsed_response['authentication']).to have_key 'resource_owner'
+        end
+
+        context "when configured to pass-through include" do
+          before :each do
+            @old_config = Rockauth::Configuration[:filter_include]
+            Rockauth::Configuration.filter_include = -> controller, is_collection do
+              controller.params[:include]
+            end
+          end
+          after :each do
+            Rockauth::Configuration.filter_include = @old_config
+          end
+          it "respects the include param for active model serializers" do
+            post :authenticate, authentication_parameters.merge(include: '')
+            expect(parsed_response).to have_key 'authentication'
+            expect(parsed_response['authentication']).not_to have_key 'resource_owner'
+          end
         end
 
         context "detailed client information is provided" do

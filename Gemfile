@@ -13,4 +13,4 @@ gemspec
 # To use a debugger
 # gem 'byebug', group: [:development, :test]
 gem 'activeadmin', github: 'activeadmin/activeadmin'
-gem 'active_model_serializers', '~> 0.8.3'
+gem 'active_model_serializers', github: 'rails-api/active_model_serializers'
