@@ -65,6 +65,8 @@ end
 
 ### API Usage
 
+Remember that what you see in your api may be very different due to your active model serializers configuration.
+
 #### Authentication Endpoint
 
 ##### Create Authentication

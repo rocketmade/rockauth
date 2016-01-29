@@ -2,6 +2,10 @@ module Rockauth
   class AuthenticationSerializer < BaseSerializer
     attributes(*%i(id token token_id expiration client_version device_identifier device_os device_os_version device_description resource_owner_type))
 
+    def root
+      'authentication'
+    end
+
     has_one :resource_owner
     has_one :provider_authentication
 

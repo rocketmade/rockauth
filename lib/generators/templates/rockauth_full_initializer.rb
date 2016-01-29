@@ -23,6 +23,10 @@ Rockauth.configure do |config|
   config.email_from = 'change-me-in-config-initializers-rockauth-rb@please-change-me.example'
   # config.forgot_password_always_successful = false
 
+  # config.filter_include = -> controller, is_collection do # Pass include from params to render for active model serializers. Default is only to pass nil
+  #   controller.params[:include]
+  # end
+
 
   begin
     Array(YAML.load_file(Rails.root.join('config/rockauth_clients.yml'))[Rails.env]).each do |client_config|

@@ -5,6 +5,10 @@ module Rockauth
     has_one :authentication
     has_many :provider_authentications
 
+    def root
+      'user'
+    end
+
     def authentication
       object.authentications.first
     end
