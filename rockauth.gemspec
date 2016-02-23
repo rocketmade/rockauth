@@ -38,4 +38,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'timecop'
   s.add_development_dependency 'activeadmin'
   s.add_development_dependency 'pry-rails'
+  s.add_development_dependency 'warden'
+  s.add_development_dependency 'useragent'
 end

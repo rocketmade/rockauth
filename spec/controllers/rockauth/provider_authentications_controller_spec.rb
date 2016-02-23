@@ -2,7 +2,6 @@ require 'spec_helper'
 
 module Rockauth
   RSpec.describe ProviderAuthenticationsController, type: :controller, social_auth: true do
-    routes { Engine.routes }
     describe "GET index" do
       context "when unauthenticated" do
         it "denies access" do

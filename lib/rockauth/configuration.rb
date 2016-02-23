@@ -1,9 +1,10 @@
 module Rockauth
   Configuration = Struct.new(*%i(allowed_password_length email_regexp token_time_to_live clients
-                                 authentication_class warn_missing_social_auth_gems providers jwt
+                                 session_client authentication_class warn_missing_social_auth_gems providers jwt
                                  serializers generate_active_admin_resources active_admin_menu_name error_renderer
                                  password_reset_token_time_to_live email_from forgot_password_always_successful
-                                 controller_mappings implicit_social_registration filter_include)) do
+                                 controller_mappings implicit_social_registration filter_include
+                                 session_layout)) do
 
     def authentication_class= arg
       @constantized_authentication_class = nil
@@ -23,6 +24,7 @@ module Rockauth
     config.email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\W]+\z/
     config.token_time_to_live = 365 * 24 * 60 * 60
     config.clients = []
+    config.session_client = nil
     config.implicit_social_registration = true
 
     config.warn_missing_social_auth_gems = true

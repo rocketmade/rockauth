@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe "me routes" do
-  routes { Rockauth::Engine.routes }
-
   it "routes POST /me to create" do
     expect(POST: "/me").to route_to(controller: "rockauth/me", action: "create", resource_owner_class_name: 'Rockauth::User')
   end

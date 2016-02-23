@@ -27,6 +27,9 @@ Rockauth.configure do |config|
   #   controller.params[:include]
   # end
 
+  config.session_client = config.clients.find { |c| c.title == 'default' }
+  # config.session_layout = -> (scope) { Hash.new('application').merge!('admin_user' => 'active_admin_logged_out')[scope] }
+
 
   begin
     Array(YAML.load_file(Rails.root.join('config/rockauth_clients.yml'))[Rails.env]).each do |client_config|

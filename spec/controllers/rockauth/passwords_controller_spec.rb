@@ -2,7 +2,6 @@ require 'spec_helper'
 
 module Rockauth
   describe PasswordsController do
-    routes { Engine.routes }
     let(:parsed_response) { JSON.parse(response.body).with_indifferent_access }
 
     let(:client) { create(:client) }
