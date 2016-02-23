@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe 'provider authentications routes' do
-  routes { Rockauth::Engine.routes }
-
   it 'routes POST /provider_authentications to create' do
     expect(POST: '/provider_authentications').to route_to(controller: 'rockauth/provider_authentications', action: 'create', resource_owner_class_name: 'Rockauth::User')
   end

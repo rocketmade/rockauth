@@ -11,6 +11,7 @@ module Rockauth
   autoload :Models
   autoload :ProviderUserInformation
   autoload :Routes
+  autoload :Warden
 end
 require 'rockauth/configuration'
 require 'rockauth/engine'

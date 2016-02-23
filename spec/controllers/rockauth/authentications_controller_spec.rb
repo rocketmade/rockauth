@@ -1,9 +1,7 @@
 require 'spec_helper'
-require 'pry'
+
 module Rockauth
   RSpec.describe AuthenticationsController, type: :controller do
-    routes { Engine.routes }
-
     let(:resource_json_key) { 'rockauth/authentication' }
 
     describe 'GET index' do

@@ -1,0 +1,40 @@
+<%= form_for resource, url: polymorphic_url([@scope, :sessions]) do |f| %>
+  <% if resource.errors.any? %>
+    <%= env["warden"].message %>
+    <ul class="errors">
+      <% resource.errors.full_messages.each do |msg| %>
+        <li class="error"><%= msg %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <div>
+    <%= f.label :username do %>
+      <%= resource.class.human_attribute_name(:username) %>
+      <%= f.email_field :username %>
+    <% end %>
+
+    <% if resource.errors[:username].any? %>
+      <ul class="errors">
+        <% resource.errors.full_messages(:username).each do |msg| %>
+          <li class="error"><%= msg %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+  <div>
+    <%= f.label :password do %>
+      <%= resource.class.human_attribute_name(:password) %>
+      <%= f.password_field :password %>
+    <% end %>
+
+    <% if resource.errors[:password].any? %>
+      <ul class="errors">
+        <% resource.errors.full_messages(:password).each do |msg| %>
+          <li class="error"><%= msg %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+  <button type="submit">Log In</button>
+<% end %>

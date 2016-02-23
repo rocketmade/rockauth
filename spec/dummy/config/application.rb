@@ -10,6 +10,7 @@ require "sprockets/railtie"
 
 Bundler.require(*Rails.groups)
 require "rockauth"
+require 'rockauth/warden'
 
 module Dummy
   class Application < Rails::Application
