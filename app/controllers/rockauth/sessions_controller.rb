@@ -13,30 +13,30 @@ module Rockauth
       build_resource
 
       if warden.user(@scope).present?
-        redirect_to (consume_sign_in_uri || scope_settings[:after_sign_in_url]), flash: { notice: I18n.t("rockauth.sesssions.existing_session") }
+        redirect_to (consume_sign_in_uri || scope_settings[:after_sign_in_url]), flash: { notice: I18n.t("rockauth.sessions.existing_session") }
       end
     end
 
     def create
       warden.authenticate scope: @scope
       if warden.user(@scope).present?
-        redirect_to consume_sign_in_uri || scope_settings[:after_sign_in_url], flash: { notice: I18n.t("rockauth.session_created") }
+        redirect_to consume_sign_in_uri || scope_settings[:after_sign_in_url], flash: { notice: I18n.t("rockauth.sessions.created") }
       else
         build_resource
-        render :new, flash: { error: I18n.t("rockauth.session_creation_failed") }
+        render :new, flash: { error: I18n.t("rockauth.sessions.creation_failed") }
       end
     end
 
     def destroy
       env['warden'].user(@scope).try(:destroy)
       env['warden'].logout(@scope)
-      redirect_to scope_settings[:after_sign_out_url], flash: { notice: I18n.t("rockauth.session_destroyed") }
+      redirect_to scope_settings[:after_sign_out_url], flash: { notice: I18n.t("rockauth.sessions.destroyed") }
     end
 
     def failure
       if params[:controller].split('/').last == 'sessions' && %w{new create}.include?(params['action'])
         build_resource
-        render :new, flash: { error: I18n.t("rockauth.session_required") }
+        render :new, flash: { error: I18n.t("rockauth.sessions.required") }
       else
         redirect_to [:new, @scope, :session]
       end
