@@ -26,6 +26,13 @@ module Rockauth
           expect(ActionMailer::Base.deliveries.last.to).to match_array [user.email]
         end
 
+        it "sends an email to the user with the appropriate subject" do
+          expect do
+            post :forgot, user: { username: user.email }
+          end.to change { ActionMailer::Base.deliveries.length }.by 1
+          expect(ActionMailer::Base.deliveries.last.subject).to eq I18n.t('rockauth.forgot_password_email_subject')
+        end
+
         it "appropriately sets the password reset token for the user" do
           expect do
             post :forgot, user: { username: user.email }
