@@ -15,9 +15,9 @@ en:
       forgot_password_not_found: "We could not find your account with the information provided. Please try again or contact your administrator for support."
       forgot_password_failed: "We could not update your password with the information provided. Please try again or contact your administrator for support."
       forgot_password_invalid_token: "Invalid token. Please try again or contact your administrator for support."
-  sessions:
-    created: "Successfully signed in."
-    existing_session: "You are already signed in."
-    destroyed: "Successfully signed out."
-    required: "You must be signed in to do that."
-    creation_failed: "Authentication Failure. Please try again."
+    sessions:
+      created: "Successfully signed in."
+      existing_session: "You are already signed in."
+      destroyed: "Successfully signed out."
+      required: "You must be signed in to do that."
+      creation_failed: "Authentication Failure. Please try again."
