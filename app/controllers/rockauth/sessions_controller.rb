@@ -13,14 +13,14 @@ module Rockauth
       build_resource
 
       if warden.user(@scope).present?
-        redirect_to (session.delete(:sign_in_return_uri) || scope_settings[:after_sign_in_url]), flash: { notice: I18n.t("rockauth.sesssions.existing_session") }
+        redirect_to (consume_sign_in_uri || scope_settings[:after_sign_in_url]), flash: { notice: I18n.t("rockauth.sesssions.existing_session") }
       end
     end
 
     def create
       warden.authenticate scope: @scope
       if warden.user(@scope).present?
-        redirect_to session.delete(:sign_in_return_uri) || scope_settings[:after_sign_in_url], flash: { notice: I18n.t("rockauth.session_created") }
+        redirect_to consume_sign_in_uri || scope_settings[:after_sign_in_url], flash: { notice: I18n.t("rockauth.session_created") }
       else
         build_resource
         render :new, flash: { error: I18n.t("rockauth.session_creation_failed") }
@@ -75,6 +75,12 @@ module Rockauth
 
     def param_key
       :authentication
+    end
+
+    def consume_sign_in_uri
+      value = session[:"#{@scope}_sign_in_return_uri"]
+      session[:"#{@scope}_sign_in_return_uri"] = nil
+      value
     end
   end
 end

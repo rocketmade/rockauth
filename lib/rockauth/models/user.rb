@@ -34,7 +34,7 @@ module Rockauth
         self.password_reset_token_expires_at = Rockauth::Configuration.password_reset_token_time_to_live.from_now
         if self.save
           Rails.logger.info "Sending password reset token for #{self.class}##{self.id}"
-          Rockauth::PasswordMailer.reset(email, password_reset_token).deliver_later
+          Rockauth::PasswordMailer.reset(email, password_reset_token, self).deliver_later
         else
           Rails.logger.error "Could not send password reset for #{self.class}##{self.id}: #{self.errors.to_json}"
         end
