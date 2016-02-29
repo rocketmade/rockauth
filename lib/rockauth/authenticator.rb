@@ -8,12 +8,17 @@ module Rockauth
     delegate :params, to: :controller
 
     def self.verified_authentication_for_request request, controller
-      bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
-      if bearer.to_s.downcase == "bearer" && token.present?
+      token = token_for_request request, controller
+      if token.present?
         Rockauth::Configuration.authentication_class.for_token(token)
       else
         nil
       end
+    end
+
+    def self.token_for_request request, controller
+      bearer, token = request.env['HTTP_AUTHORIZATION'].to_s.split(' ')
+      token if bearer.to_s.downcase == "bearer"
     end
 
     def self.authentication_request request, controller
