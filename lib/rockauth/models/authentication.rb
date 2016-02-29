@@ -130,10 +130,17 @@ module Rockauth
 
         class << self
           def for_token token
-            begin
-              payload = JWT.decode(token, Configuration.jwt.secret).first
+            payload = decode_token token
+            if payload.present?
               authentication = where(hashed_token_id: hash_token_id(payload['jti'])).first
               authentication if authentication.present? && authentication.valid_payload?(payload)
+            end
+          end
+
+          def decode_token token
+            begin
+              payload = JWT.decode(token, Configuration.jwt.secret).first
+              payload
             rescue JWT::VerificationError => e
               Rails.logger.error "[Rockauth] Possible Forgery Attempt: #{e}"
               nil
