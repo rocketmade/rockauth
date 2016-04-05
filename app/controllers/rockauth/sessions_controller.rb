@@ -70,7 +70,7 @@ module Rockauth
     end
 
     def permitted_params
-      params.permit(param_key => [:username, :password])
+      params.permit(param_key => [:username, :password, :token])
     end
 
     def param_key

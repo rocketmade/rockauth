@@ -20,6 +20,28 @@ module Rockauth
         Rockauth::Configuration.session_client = create(:client)
       end
 
+      context 'when posting an auth token for an existing authentication' do
+        let(:authentication_parameters) do
+          { token: authentication.token }
+        end
+
+        let!(:user) { create(:user) }
+        let(:client) { create(:client) }
+
+        let!(:authentication) do
+          create(:password_authentication, resource_owner: user, client: client)
+        end
+
+        it "authenticates the user" do
+          expect do
+            post '/sessions', authentication_parameters
+          end.not_to change { Rockauth::Authentication.count }
+          expect(response).to redirect_to '/'
+          expect(request.env['warden'].user(:user)).to be_a Rockauth::Authentication
+          expect(request.env['warden'].user(:user).resource_owner).to eq user
+        end
+      end
+
       context 'when missing basic authentication data' do
         let(:authentication_parameters) do
           { authentication: { username: 'foo', password: 'bar' } }

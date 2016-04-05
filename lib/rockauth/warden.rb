@@ -9,7 +9,7 @@ module Rockauth
   module Warden
     class Railtie < ::Rails::Railtie
       config.app_middleware.use ::Warden::Manager do |manager|
-        manager.default_strategies :rockauth_password
+        manager.default_strategies :rockauth_password, :rockauth_token
         manager.failure_app = Rockauth::SessionsController.action(:failure)
       end
     end
@@ -75,11 +75,12 @@ module Rockauth
 
     class TokenStrategy < ::Warden::Strategies::Base
       def valid?
-        params.has_key?("token")
+        params.has_key? 'token'
       end
 
       def authenticate!
-        auth = Rockauth::Configuration.authentication_class.for_token(token)
+        auth = Rockauth::Configuration.authentication_class.for_token(params['token'])
+        auth.token = params['token']
         if auth.present?
           success!(auth)
         else
