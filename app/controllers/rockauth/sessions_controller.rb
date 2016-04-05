@@ -18,6 +18,7 @@ module Rockauth
     end
 
     def create
+      env['warden'].logout(@scope) # assume that someone attempting to post to login wants to login again, and log them out
       warden.authenticate scope: @scope
       if warden.user(@scope).present?
         redirect_to consume_sign_in_uri || scope_settings[:after_sign_in_url], flash: { notice: I18n.t("rockauth.sessions.created") }
