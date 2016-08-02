@@ -4,7 +4,7 @@ module Rockauth
                                  serializers generate_active_admin_resources active_admin_menu_name error_renderer
                                  password_reset_token_time_to_live email_from forgot_password_always_successful
                                  controller_mappings implicit_social_registration filter_include
-                                 session_layout)) do
+                                 session_layout signout_method)) do
 
     def authentication_class= arg
       @constantized_authentication_class = nil
@@ -64,6 +64,8 @@ module Rockauth
     config.filter_include = -> controller, is_collection do
       nil
     end
+
+    config.signout_method = :destroy
   end
 
   def self.configure

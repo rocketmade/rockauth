@@ -303,6 +303,24 @@ module Rockauth
             expect(response.body).to eq '{}'
           end
 
+          context "the configured sign out method is used to sign out" do
+            before :each do
+              @original_method = Rockauth::Configuration.signout_method
+              Rockauth::Configuration.signout_method = :destroy!
+            end
+
+            after :each do
+              Rockauth::Configuration.signout_method = @original_method
+            end
+
+            it "uses the configured method for destruction" do
+              expect_any_instance_of(Authentication).to receive(:destroy!).and_return true
+              delete :destroy
+              expect(response.status).to eq 200
+              expect(response.body).to eq '{}'
+            end
+          end
+
           it 'calls after logout hook' do
             expect_any_instance_of(Rockauth::User).to receive(:run_hook).with(:before_logout, anything).once
 

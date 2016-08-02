@@ -94,6 +94,22 @@ module Rockauth
               delete '/sessions', class_name_params
             }.to change { Authentication.where(id: authentication.id).count }.from(1).to(0)
           end
+
+          context "the configured sign out method is used to sign out" do
+            before :each do
+              @original_method = Rockauth::Configuration.signout_method
+              Rockauth::Configuration.signout_method = :destroy!
+            end
+
+            after :each do
+              Rockauth::Configuration.signout_method = @original_method
+            end
+
+            it "uses the configured method for destruction" do
+              expect_any_instance_of(Authentication).to receive(:destroy!).and_return true
+              delete '/sessions', class_name_params
+            end
+          end
         end
       end
     end

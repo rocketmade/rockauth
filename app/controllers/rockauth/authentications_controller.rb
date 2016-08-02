@@ -30,7 +30,7 @@ module Rockauth
     def destroy
       @authentication = current_authentication
       @authentication = current_resource_owner.authentications.find(params[:id]) if params[:id].present?
-      if resource.destroy
+      if resource.public_send(Rockauth::Configuration.signout_method)
         render json: {}, status: 200
       else
         render_error 409, I18n.t("rockauth.errors.destroy_error", resource: "Authentication")

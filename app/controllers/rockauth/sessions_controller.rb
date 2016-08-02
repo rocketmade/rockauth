@@ -29,7 +29,7 @@ module Rockauth
     end
 
     def destroy
-      env['warden'].user(@scope).try(:destroy)
+      env['warden'].user(@scope).try(Rockauth::Configuration.signout_method)
       env['warden'].logout(@scope)
       redirect_to scope_settings[:after_sign_out_url], flash: { notice: I18n.t("rockauth.sessions.destroyed") }
     end
