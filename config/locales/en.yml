@@ -16,6 +16,7 @@ en:
       forgot_password_not_found: "We could not find your account with the information provided. Please try again or contact your administrator for support."
       forgot_password_failed: "We could not update your password with the information provided. Please try again or contact your administrator for support."
       forgot_password_invalid_token: "Invalid token. Please try again or contact your administrator for support."
+      unsafe_parameters_error: "Unsafe parameters were detected in GET parameters, request rejected."
     sessions:
       created: "Successfully signed in."
       existing_session: "You are already signed in."
