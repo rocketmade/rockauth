@@ -125,6 +125,16 @@ module Rockauth
           end
         end
 
+        context "sensitive parameters are given in the URL" do
+          it "rejects the request" do
+            allow(request).to receive(:GET).and_return(authentication_parameters)
+            expect do
+              post :authenticate, authentication_parameters
+            end.not_to change { Rockauth::Authentication.count }
+            expect(response).not_to be_success
+          end
+        end
+
         context "detailed client information is provided" do
           let(:authentication_parameters) do
             {

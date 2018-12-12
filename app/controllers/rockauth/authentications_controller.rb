@@ -6,6 +6,7 @@ module Rockauth
     include ActionController::Helpers
     include ActionController::Serialization
     include Rockauth::Controllers::Scope
+    include Rockauth::Controllers::UnsafeParameters
 
     serialization_scope :view_context
 

@@ -2,6 +2,7 @@
 module Rockauth
   class SessionsController < ActionController::Base
     include Rockauth::Controllers::Scope
+    include Rockauth::Controllers::UnsafeParameters
 
     before_filter :set_variables
     helper_method :resource

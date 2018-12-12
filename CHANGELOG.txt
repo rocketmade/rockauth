@@ -1,0 +1,2 @@
+* 0.0.1.pre3:
+- Reject requests to the authentication endpoints which contain sensitive data in GET parameters

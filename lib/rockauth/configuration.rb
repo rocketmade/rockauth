@@ -4,7 +4,7 @@ module Rockauth
                                  serializers generate_active_admin_resources active_admin_menu_name error_renderer
                                  password_reset_token_time_to_live email_from forgot_password_always_successful
                                  controller_mappings implicit_social_registration filter_include
-                                 session_layout signout_method reject_sensitive_url_parameters)) do
+                                 session_layout signout_method unsafe_url_parameters)) do
 
     def authentication_class= arg
       @constantized_authentication_class = nil
@@ -66,7 +66,7 @@ module Rockauth
     end
 
     config.signout_method = :destroy
-    config.reject_sensitive_url_parameters = true
+    config.unsafe_url_parameters = %i{password password_confirmation client_secret token}
   end
 
   def self.configure

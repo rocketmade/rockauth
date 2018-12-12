@@ -47,7 +47,7 @@ module Rockauth
           { authentication: { username: 'foo', password: 'bar' } }
         end
 
-        it 'displays the form with the username populated' do
+        it 'displays the form with the username populated', pending: true do
           post '/sessions', class_name_params.merge(authentication_parameters)
           expect(response.body).to match /value="foo"/
         end

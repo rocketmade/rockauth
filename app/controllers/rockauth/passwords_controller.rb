@@ -4,6 +4,7 @@ require 'active_model_serializers'
 module Rockauth
   class PasswordsController < ActionController::API
     include Rockauth::Controllers::Scope
+    include Rockauth::Controllers::UnsafeParameters
 
     before_filter do
       raise ActiveRecord::NotFoundError unless scope_settings[:password_reset]
